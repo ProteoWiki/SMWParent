@@ -314,7 +314,8 @@ class SMWParent {
 
 	private static function isEntryType( $entry, $type ) {
 
-		$properties = array("Is_Type");
+		global $wgSMWParentTypeProperty;
+		$properties = $wgSMWParentTypeProperty;
 
 		// Query -> current page
 		$results = self::getQueryResults( "[[$entry]]", $properties, false );

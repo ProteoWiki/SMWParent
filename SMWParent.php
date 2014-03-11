@@ -45,7 +45,8 @@ $wgHooks['ParserFirstCallInit'][] = 'wfRegisterSMWParent';
 // We set the limit of ancestors to check
 $wgSMWParentlimit = 100;
 $wgSMWParentdefault = "Request"; 
-$wgSMWChildrendefault = "File"; 
+$wgSMWChildrendefault = "File";
+$wgSMWParentTypeProperty = array("Is_Type");
 $wgSMWParentProps = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Request');
 
 function wfRegisterSMWParent( $parser ) {
