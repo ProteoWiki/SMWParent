@@ -366,7 +366,12 @@ class SMWParent {
 		// $smwgIP is defined by Semantic MediaWiki, and we don't allow
 		// this file to be sourced unless Semantic MediaWiki is included.
 		global $smwgIP;
-		include_once( $smwgIP . "/includes/SMW_QueryProcessor.php" );
+		
+		if ( file_exists( $smwgIP . "/includes/SMW_QueryProcessor.php") ) {
+			include_once( $smwgIP . "/includes/SMW_QueryProcessor.php" );
+		} else {
+			include_once( $smwgIP . "/includes/query/SMW_QueryProcessor.php" );
+		}
 
 		$params = array();
 		$inline = true;
