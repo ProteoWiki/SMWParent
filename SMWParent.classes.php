@@ -127,17 +127,17 @@ class SMWParent {
 		// In theory, there is only one row
 		while ( $row = $results->getNext() ) {
 
-			$processCont = $row[1];
-			if ( !empty($processCont) ) {
+			if ( isset( $row[1] ) && !empty( $row[1]) ) {
+				$processCont = $row[1];
 
 				while ( $obj = $processCont->getNextObject() ) {
 					 array_push( $processes, $obj->getWikiValue() );
 				}
 			}
 
-			$sampleCont = $row[2];
+			if ( isset( $row[2] ) && !empty( $row[2]) ) {
 
-			if ( !empty($sampleCont) ) {
+				$sampleCont = $row[2];
 
 				while ( $obj = $sampleCont->getNextObject() ) {
 
@@ -145,9 +145,9 @@ class SMWParent {
 					}
 				}
 
-				$requestCont = $row[3];
+			if ( isset( $row[3] ) && !empty( $row[3]) ) {
 
-				if (!empty($requestCont)) {
+					$requestCont = $row[3];
 
 					while ( $obj = $requestCont->getNextObject() ) {
 
