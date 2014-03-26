@@ -26,8 +26,11 @@ $wgSMWParentProps = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Reques
 
 ## Usage
 
-* {{#SMWParent:FULLPAGENAME|PARENTTYPE/PARENTLEVEL|link}}
-** 1st parameter: If FULLPAGENAME is skipped, current page is used
-** 2nd parameter: Which parent type to retrieve, or up to which level arrive
-** 3rd parameter: If input is 'link', resulting pages are shown as links instead of as text.
+* {{#SMWParent:FULLPAGENAME|PARENT_TYPE/PARENT_LEVEL|link}}
+
+Params:
+
+- If FULLPAGENAME is skipped, current page is used
+- PARENT_TYPE to retrieve, or alternately up to which level PARENT_LEVEL to reach
+- If input is 'link', resulting pages are shown as links instead of as text.
 
