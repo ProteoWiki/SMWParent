@@ -37,6 +37,7 @@ $wgExtensionMessagesFiles['SMWParentMagic'] = dirname( __FILE__ ) . '/SMWParent.
 
 // Autoloading
 $wgAutoloadClasses['SMWParent'] = dirname( __FILE__ ) . '/SMWParent.classes.php';
+$wgAutoloadClasses['SMWParentIterate'] = dirname( __FILE__ ) . '/SMWParent.iterate.php';
 
 // Hooks
 $wgHooks['ParserFirstCallInit'][] = 'wfRegisterSMWParent';
@@ -53,7 +54,8 @@ function wfRegisterSMWParent( $parser ) {
 	
 	$parser->setFunctionHook( 'SMWParent', 'SMWParent::executeGetParent', SFH_OBJECT_ARGS );
 	$parser->setFunctionHook( 'SMWChildren', 'SMWParent::executeGetChildren', SFH_OBJECT_ARGS );
-	
+	$parser->setFunctionHook( 'SMWEntityIterate', 'SMWParentIterate::doIteration', SFH_OBJECT_ARGS );
+
 	return true;
 
 }
