@@ -1,6 +1,6 @@
 # SMWParent
 
-Extension for printing out ancestors and descendants of a certain page based on interconnected Semantic MediaWiki properties.
+Extension for printing out ancestors and descendants of a certain page-based on interconnected Semantic MediaWiki properties.
 
 ## Functions 
 

@@ -10,51 +10,53 @@ if ( !defined( 'SMW_VERSION' ) ) {
 	exit( 1 );
 }
 
-#
-# This is the path to your installation of SemanticTasks as
-# seen from the web. Change it if required ($wgScriptPath is the
-# path to the base directory of your wiki). No final slash.
-# #
-$spScriptPath = $wgScriptPath . '/extensions/SMWParent';
-#
+//self executing anonymous function to prevent global scope assumptions
+call_user_func( function() {
 
-# Extension credits
-$wgExtensionCredits[defined( 'SEMANTIC_EXTENSION_TYPE' ) ? 'semantic' : 'other'][] = array(
-	'path' => __FILE__,
-	'name' => 'SMWParent',
-	'author' => array(
-		'[https://www.mediawiki.org/wiki/User:Toniher Toni Hermoso]'
-	),
-	'version' => '0.1',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:SMWParent',
-	'descriptionmsg' => 'smwparent-desc',
-);
+	# Extension credits
+	$GLOBALS['wgExtensionCredits'][defined( 'SEMANTIC_EXTENSION_TYPE' ) ? 'semantic' : 'other'][] = array(
+		'path' => __FILE__,
+		'name' => 'SMWParent',
+		'author' => array(
+			'[https://www.mediawiki.org/wiki/User:Toniher Toni Hermoso]'
+		),
+		'version' => '0.1',
+		'url' => 'https://www.mediawiki.org/wiki/Extension:SMWParent',
+		'descriptionmsg' => 'smwparent-desc',
+	);
+	
+	
+	// i18n
+	$GLOBALS['wgMessagesDirs']['SMWParent'] = __DIR__ . '/i18n';
+	$GLOBALS['wgExtensionMessagesFiles']['SMWParent'] = __DIR__ . '/SMWParent.i18n.php';
+	$GLOBALS['wgExtensionMessagesFiles']['SMWParentMagic'] = __DIR__ . '/SMWParent.i18n.magic.php';
+	
+	// Autoloading
+	$GLOBALS['wgAutoloadClasses']['SMWParent'] = __DIR__ . '/SMWParent.classes.php';
+	$GLOBALS['wgAutoloadClasses']['SMWParentIterate'] = __DIR__ . '/SMWParent.iterate.php';
+	
+	// Hooks
+	$GLOBALS['wgHooks']['ParserFirstCallInit'][] = 'wfRegisterSMWParent';
+	
+	
+	// We set the limit of ancestors to check
+	$GLOBALS['wgSMWParentlimit'] = 100;
+	// Default/last parent element
+	$GLOBALS['wgSMWParentdefault'] = "Request";
+	// Default/last child element
+	$GLOBALS['wgSMWChildrendefault'] = "File";
+	// Which property designs the parent or children
+	$GLOBALS['wgSMWParentTypeProperty'] = array("Is_Type");
+	// Properties that allow the linking
+	$GLOBALS['wgSMWParentProps'] = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Request');
 
-
-// i18n
-$wgExtensionMessagesFiles['SMWParent'] = dirname( __FILE__ ) . '/SMWParent.i18n.php';
-$wgExtensionMessagesFiles['SMWParentMagic'] = dirname( __FILE__ ) . '/SMWParent.i18n.magic.php';
-
-// Autoloading
-$wgAutoloadClasses['SMWParent'] = dirname( __FILE__ ) . '/SMWParent.classes.php';
-$wgAutoloadClasses['SMWParentIterate'] = dirname( __FILE__ ) . '/SMWParent.iterate.php';
-
-// Hooks
-$wgHooks['ParserFirstCallInit'][] = 'wfRegisterSMWParent';
-
-
-// We set the limit of ancestors to check
-$wgSMWParentlimit = 100;
-$wgSMWParentdefault = "Request"; 
-$wgSMWChildrendefault = "File";
-$wgSMWParentTypeProperty = array("Is_Type");
-$wgSMWParentProps = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Request');
+});
 
 function wfRegisterSMWParent( $parser ) {
 	
-	$parser->setFunctionHook( 'SMWParent', 'SMWParent::executeGetParent', SFH_OBJECT_ARGS );
-	$parser->setFunctionHook( 'SMWChildren', 'SMWParent::executeGetChildren', SFH_OBJECT_ARGS );
-	$parser->setFunctionHook( 'SMWEntityIterate', 'SMWParentIterate::doIteration', SFH_OBJECT_ARGS );
+	$parser->setFunctionHook( 'SMWParent', 'SMWParent::executeGetParent', Parser::SFH_OBJECT_ARGS );
+	$parser->setFunctionHook( 'SMWChildren', 'SMWParent::executeGetChildren', Parser::SFH_OBJECT_ARGS );
+	$parser->setFunctionHook( 'SMWEntityIterate', 'SMWParentIterate::doIteration', Parser::SFH_OBJECT_ARGS );
 
 	return true;
 

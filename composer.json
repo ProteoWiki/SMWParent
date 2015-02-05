@@ -1,0 +1,26 @@
+{
+	"name": "mediawiki/smw-parent",
+	"type": "mediawiki-extension",
+	"description": "",
+	"keywords": [
+		"MediaWiki",
+		"Semantic MediaWiki",
+		"SMW"
+	],
+	"homepage": "https://github.com/ProteoWiki/SMWParent",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Toni Hermoso Pulido",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"composer/installers": "1.*,>=1.0.1"
+	},
+	"autoload": {
+		"files": ["SMWParent.php"],
+		"classmap": ["SMWParent.classes.php"]
+	}
+}
