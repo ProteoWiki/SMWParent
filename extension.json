@@ -1,0 +1,46 @@
+{
+	"name": "SMWParent",
+	"version": "0.2.0",
+	"author": [
+		"Toni Hermoso Pulido"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:SMWParent",
+	"descriptionmsg": "smwparent-desc",
+	"license-name": "GPL-2.0",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.27.0"
+	},
+	"config": {
+		"wgSMWParentlimit": 100,
+		"wgSMWParentdefault": "Request",
+		"wgSMWChildrendefault": "File",
+		"wgSMWParentTypeProperty": ["Is_Type"],
+		"wgSMWParentProps": ["Comes_from_Process", "Comes_from_Sample", "Has_Request"]
+	},
+	"ExtensionMessagesFiles": {
+		"SMWParentMagic": "SMWParent.i18n.magic.php"
+	},
+	"MessagesDirs": {
+		"SMWParent": [
+			"i18n"
+		]
+	},
+	"Hooks": {
+		"ParserFirstCallInit": [
+			"SMWParentHooks::onParserFirstCallInit"
+		]
+	},
+	"AutoloadClasses": {
+		"SMWParent": "includes/SMWParent.classes.php",
+		"SMWParentHooks": "includes/SMWParent.hooks.php",
+		"ApiSMWParent": "includes/api/SMWParent.api.parent.php",
+		"ApiSMWChildren": "includes/api/SMWParent.api.children.php"
+	},
+	"ApiModules": {
+		"smwparent" : "ApiSMWParent",
+		"smwchildren" : "ApiSMWChildren"
+	},
+	"manifest_version": 1
+}
+
