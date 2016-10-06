@@ -52,7 +52,8 @@ class SMWParent {
 
 		self::$parent_round = 0;
 
-		return self::getParent( $child_text, $parent_type, 1, $link );
+		// TODO: To fix this
+		// return self::getParent( $child_text, $parent_type, 1, $link );
 
 	}
 
@@ -92,18 +93,14 @@ class SMWParent {
 
 		self::$children_round = 0;
 
-		return self::getChildren( $parent_text, $children_type, 1, $link );
+		// TODO: To fix this
+		// return self::getChildren( $parent_text, $children_type, 1, $link );
 
 	}
 
-	// Default $level=1; direct parent
-	public static function getParent( $child_text, $parent_type, $level=1, $link=0 ) {
+	private static function getParent( $child_text, $parent_type, $link_properties, $type_properties, $level=1, $print_properties ) {
 
-		global $wgSMWParentlimit;
-		global $wgSMWParentProps;
-
-		// Properties to check: Comes from Process, Comes from Sample, Has Request
-		$properties = $wgSMWParentProps;
+		global $wgBioParserSMWParentlimit;
 
 		// After results query, we add parent round
 		if (! isset(self::$parent_round) ) {
@@ -112,12 +109,12 @@ class SMWParent {
 		self::$parent_round++;
 
 		// Ancestors limit
-		if ( $wgSMWParentlimit < self::$parent_round ) {
-			return "";
+		if ( $wgBioParserSMWParentlimit < self::$parent_round ) {
+			return array();
 		} 
 
 		// Query -> current page
-		$results = self::getQueryResults( "[[$child_text]]", $properties, false );
+		$results = self::getQueryResults( "[[$child_text]]", $link_properties, false );
 
 		#Containers
 		$processes = array();
@@ -169,10 +166,7 @@ class SMWParent {
 					$casesout = array();
 					foreach ($requests as $temp) {
 						if ($temp != '') {
-							if ($link == 1) {
-								$temp = self::makeLink($temp);	       
-							}
-						array_push($casesout, $temp);
+							array_push($casesout, $temp);
 						}
 					}
 			
@@ -197,46 +191,35 @@ class SMWParent {
 						foreach ($cases as $case) {
 				
 							// We accept parent numbers
-							if (  ( is_numeric($parent_type) && $parent_type == $level )  || ( self::isEntryType($case, $parent_type )  ) ) {
-								if ($link == 1) {
-									$case = self::makeLink($case);
-								}
+							if (  ( is_numeric($parent_type) && $parent_type == $level )  || ( self::isEntryType( $case, $parent_type, $type_properties )  ) ) {
 								array_push($casesout, $case);
 							} else {
 								$itera = $level + 1;
-								$outcome = self::getParent( $case, $parent_type, $itera, $link );
-								$temparray = explode(",", $outcome);
+								$temparray = self::getParent( $case, $parent_type, $itera );
 								foreach ($temparray as $temp) {
 									if ($temp != '') {
-										if ($link == 1) {
-										 $temp = self::makeLink($temp);	       
-										}
-									array_push($casesout, $temp);
+										array_push($casesout, $temp);
+									}
 								}
 							}
+
 						}
 
-					}
-
-					return implode(",", $casesout);
+					return $casesout;
 				}
 			}
 		}
 		
 		// Return blank if anything left
 		
-		return "";
+		return array();
 	}
 
-	// Default level=1, direct child
-	public static function getChildren( $parent_text, $children_type, $level=1, $link=0 ) {
-	
-		global $wgSMWParentlimit;
-		global $wgSMWParentProps;
 
-		// Properties to check: Comes from Process, Comes from Sample, Has Request
-		// We put - for inverse properties
-		$properties = $wgSMWParentProps;
+	// Default level=1, direct child
+	private static function getChildren( $parent_text, $children_type, $link_properties, $type_properties, $level=1, $print_properties ) {
+	
+		global $wgBioParserSMWParentlimit;
 
 		// After results query, we add parent round
 		if (! isset(self::$children_round) ) {
@@ -245,16 +228,16 @@ class SMWParent {
 		self::$children_round++;
 
 		// Ancestors limit
-		if ( $wgSMWParentlimit < self::$children_round ) {
-			return "";
+		if ( $wgBioParserSMWParentlimit < self::$children_round ) {
+			return array();
 		}
 
 		// Query -> current page
 		$childrenlist = array();
 
-		foreach ( $properties as $prop ) {
+		foreach ( $link_properties as $prop ) {
 
-			$results = self::getQueryResults( "[[$prop::$parent_text]]", array(), true );
+			$results = self::getQueryResults( "[[$prop::$parent_text]]", $print_properties, true );
 
 			// In theory, there is only one row
 			while ( $row = $results->getNext() ) {
@@ -278,11 +261,7 @@ class SMWParent {
 		foreach ( $childrenlist as $children ) {
 
 			// Children round
-			if ( ( is_numeric($children_type) && $children_type == $level ) || ( self::isEntryType($children, $children_type ) ) ) {
-
-				if ($link == 1) {
-					$children = self::makeLink($children);
-				}
+			if ( ( is_numeric($children_type) && $children_type == $level ) || ( self::isEntryType( $children, $children_type, $type_properties ) ) ) {
 
 				array_push($childrenout, $children);
 		
@@ -290,16 +269,11 @@ class SMWParent {
 
 				// We increase level here
 				$itera = $level + 1;
-				$outcome = self::getChildren( $children, $children_type, $itera, $link );
-				$temparray = explode(",", $outcome);
+				$temparray = self::getChildren( $children, $children_type, $itera );
 				
 				foreach ($temparray as $temp) {
 				
 					if ($temp != '') {
-
-						if ($link == 1) {
-							$temp = self::makeLink($temp);
-						}
 
 						array_push($childrenout, $temp);
 					}
@@ -307,33 +281,40 @@ class SMWParent {
 			}
 		}
 
-		return implode(",", $childrenout);
+		return $childrenout;
 
 	}
 
 
-	private static function isEntryType( $entry, $type ) {
+	/**
+	* This function checks the type of an entry
+	* @param $entry String : entry type
+	* @param $type String: the type checked
+	* @param $type_properties Array: Properties that assign tyoe
+	* @return boolean
+	*/
 
-		global $wgSMWParentTypeProperty;
-		$properties = $wgSMWParentTypeProperty;
+	private static function isEntryType( $entry, $type, $type_properties ) {
 
-		// Query -> current page
-		$results = self::getQueryResults( "[[$entry]]", $properties, false );
+		// Are we asking for a category
+		if ( in_array( "Categories", $type_properties ) ) {
 
-		while ( $row = $results->getNext() ) {
-			$typeCont = $row[1];
-			if ( !empty($typeCont) ) {
+			if ( is_object(Title::newFromText($entry)) ) {
+				$titleObj = Title::newFromText($entry);
+				$wikiPage = WikiPage::factory( $titleObj );
+				$categories_objects = $wikiPage::getCategories();
 
-				while ( $obj = $typeCont->getNextObject() ) {
-					if ( $obj->getWikiValue() == $type ) {
-						// If the same type
-						return true;
+				while ( $category = $categories_objects->next() ) {
+					if ( is_object( $category ) ) {
+						$title = $category->getBaseText();
+						if ( $title == $type ) {
+							return true;
+						}
 					}
-				}   
-			}  
-		}
+				}
+			}
 
-		return false;
+		}
 	}
 
 
