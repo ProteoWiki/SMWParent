@@ -32,11 +32,11 @@ call_user_func( function() {
 	$GLOBALS['wgExtensionMessagesFiles']['SMWParentMagic'] = __DIR__ . '/SMWParent.i18n.magic.php';
 	
 	// Autoloading
-	$GLOBALS['wgAutoloadClasses']['SMWParent'] = __DIR__ . '/SMWParent.classes.php';
-	$GLOBALS['wgAutoloadClasses']['SMWParentIterate'] = __DIR__ . '/SMWParent.iterate.php';
-	
+	$GLOBALS['wgAutoloadClasses']['SMWParent'] = __DIR__ . '/includes/SMWParent.classes.php';
+	$GLOBALS['wgAutoloadClasses']['SMWParentHooks'] = __DIR__ . '/includes/SMWParent.hooks.php';
+
 	// Hooks
-	$GLOBALS['wgHooks']['ParserFirstCallInit'][] = 'wfRegisterSMWParent';
+	$GLOBALS['wgHooks']['ParserFirstCallInit'][] = 'SMWParentHooks::onParserFirstCallInit';
 	
 	
 	// We set the limit of ancestors to check
@@ -51,14 +51,4 @@ call_user_func( function() {
 	$GLOBALS['wgSMWParentProps'] = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Request');
 
 });
-
-function wfRegisterSMWParent( $parser ) {
-	
-	$parser->setFunctionHook( 'SMWParent', 'SMWParent::executeGetParent', Parser::SFH_OBJECT_ARGS );
-	$parser->setFunctionHook( 'SMWChildren', 'SMWParent::executeGetChildren', Parser::SFH_OBJECT_ARGS );
-	$parser->setFunctionHook( 'SMWEntityIterate', 'SMWParentIterate::doIteration', Parser::SFH_OBJECT_ARGS );
-
-	return true;
-
-}
 

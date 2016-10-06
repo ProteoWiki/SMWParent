@@ -21,6 +21,5 @@
 	},
 	"autoload": {
 		"files": ["SMWParent.php"],
-		"classmap": ["SMWParent.classes.php"]
 	}
 }
