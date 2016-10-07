@@ -11,6 +11,7 @@ class SMWParentParser {
 		global $wgSMWParentdefault;
 		global $wgSMWParentTypeProperty;
 		global $wgSMWParentProps;
+		global $wgSMWParentPrintProps;
 
 		// Whether returning a link or not
 		$link = 0;
@@ -69,6 +70,9 @@ class SMWParentParser {
 	public static function parseChildren( $parser, $frame, $args ) {
 		
 		global $wgSMWChildrendefault;
+		global $wgSMWParentTypeProperty;
+		global $wgSMWParentProps;
+		global $wgSMWParentPrintProps;
 
 		// Whether returning a link or not
 		$link = 0;
@@ -100,8 +104,8 @@ class SMWParentParser {
 		}
 
 		$input = array();
-		$input["parent_text"] = $child_text;
-		$input["children_type"] = $parent_type;
+		$input["parent_text"] = $parent_text;
+		$input["children_type"] = $children_type;
 		$input["link_properties"] = $wgSMWParentProps;
 		$input["type_properties"] = $wgSMWParentTypeProperty;
 		$input["level"] = 1;
