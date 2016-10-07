@@ -52,108 +52,59 @@ class SMWParent {
 		// Ancestors limit
 		if ( $wgSMWParentlimit < self::$parent_round ) {
 			return array();
-		} 
+		}
 
 		// Query -> current page
-		$results = self::getQueryResults( "[[$child_text]]", $link_properties, false );
+		$parentlist = array();
 
-		#Containers
-		$processes = array();
-		$samples = array();
-		$requests = array();
+		foreach ( $link_properties as $prop ) {
 
-		// In theory, there is only one row
-		while ( $row = $results->getNext() ) {
+			$results = self::getQueryResults( "[[$child_text]]", $link_properties, false );
 
-			if ( isset( $row[1] ) && !empty( $row[1]) ) {
-				$processCont = $row[1];
+			// In theory, there is only one row
+			while ( $row = $results->getNext() ) {
 
-				while ( $obj = $processCont->getNextObject() ) {
-					 array_push( $processes, $obj->getWikiValue() );
-				}
-			}
+				$parentCont = $row[1];
+				if ( !empty($parentCont) ) {
 
-			if ( isset( $row[2] ) && !empty( $row[2]) ) {
+					while ( $obj = $parentCont->getNextObject() ) {
 
-				$sampleCont = $row[2];
-
-				while ( $obj = $sampleCont->getNextObject() ) {
-
-					array_push( $samples, $obj->getWikiValue() );
+						array_push( $parentlist, $obj->getWikiValue() );
 					}
 				}
 
-			if ( isset( $row[3] ) && !empty( $row[3]) ) {
-
-					$requestCont = $row[3];
-
-					while ( $obj = $requestCont->getNextObject() ) {
-
-						array_push( $requests, $obj->getWikiValue() );
-					}
-				}
 			}
 
-			if ( count($requests) == 0 && count($samples) == 0 && count($processes) == 0 ) {
+		}
 
-				// This page is not in the flow
-				return "";
+		// Final ones to retrieve
+		$parentout = array();
 
+		foreach ( $parentlist as $parent ) {
+
+			// Children round
+			if ( ( is_numeric($parent_type) && $parent_type == $level ) || ( self::isEntryType( $parent, $parent_type, $type_properties ) ) ) {
+
+				array_push($parentout, $parent);
+		
 			} else {
 
-				//If requests has content, that's it
-				if ( count($requests) > 0 ) {
-
-					$casesout = array();
-					foreach ($requests as $temp) {
-						if ($temp != '') {
-							array_push($casesout, $temp);
-						}
-					}
-			
-					// We assume not only one
-					return( join(",", $casesout) );
-			
-				} else {
-
-					if ( count($samples) > 0 && count($processes) > 0 ) {
-						// Problem here -> return blank for now
-						return "";
-						
-					} else {
-						// Direct ancestor is sample/process. We assume all of the same kind. We use case as generic
-						
-						$cases = array();
-						if ( count($samples) > 0 ) { $cases = $samples; }
-						else {  $cases = $processes; }
-
-						$casesout = array();
-
-						foreach ($cases as $case) {
+				// We increase level here
+				$itera = $level + 1;
+				$temparray = self::getParent( $parent, $parent_type, $itera );
 				
-							// We accept parent numbers
-							if (  ( is_numeric($parent_type) && $parent_type == $level )  || ( self::isEntryType( $case, $parent_type, $type_properties )  ) ) {
-								array_push($casesout, $case);
-							} else {
-								$itera = $level + 1;
-								$temparray = self::getParent( $case, $parent_type, $itera );
-								foreach ($temparray as $temp) {
-									if ($temp != '') {
-										array_push($casesout, $temp);
-									}
-								}
-							}
+				foreach ($temparray as $temp) {
+				
+					if ($temp != '') {
 
-						}
-
-					return $casesout;
+						array_push($parentout, $temp);
+					}
 				}
 			}
 		}
-		
-		// Return blank if anything left
-		
-		return array();
+
+		return $parentnout;
+
 	}
 
 
