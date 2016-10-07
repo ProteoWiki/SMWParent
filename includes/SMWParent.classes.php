@@ -59,7 +59,9 @@ class SMWParent {
 
 		foreach ( $link_properties as $prop ) {
 
-			$results = self::getQueryResults( "[[$child_text]]", array_unshift( $print_properties, $prop ), false );
+			$printout_properties = $print_properties;
+			array_unshift( $printout_properties, $prop );
+			$results = self::getQueryResults( "[[$child_text]]", $printout_properties, false );
 
 			// In theory, there is only one row
 			while ( $row = $results->getNext() ) {
@@ -85,7 +87,7 @@ class SMWParent {
 			// Children round
 			if ( ( is_numeric($parent_type) && $parent_type == $level ) || ( self::isEntryType( $parent, $parent_type, $type_properties ) ) ) {
 
-				array_push($parentout, $parent);
+				array_push( $parentout, $parent );
 		
 			} else {
 
@@ -97,7 +99,7 @@ class SMWParent {
 				
 					if ($temp != '') {
 
-						array_push($parentout, $temp);
+						array_push( $parentout, $temp );
 					}
 				}
 			}
