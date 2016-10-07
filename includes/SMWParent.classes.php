@@ -91,7 +91,7 @@ class SMWParent {
 
 				// We increase level here
 				$itera = $level + 1;
-				$temparray = self::getParent( $parent, $parent_type, $itera );
+				$temparray = self::getParent( $parent, $parent_type, $link_properties, $type_properties, $itera, $print_properties );
 				
 				foreach ($temparray as $temp) {
 				
@@ -161,7 +161,7 @@ class SMWParent {
 
 				// We increase level here
 				$itera = $level + 1;
-				$temparray = self::getChildren( $children, $children_type, $itera );
+				$temparray = self::getChildren( $children, $children_type, $link_properties, $type_properties, $itera, $print_properties );
 				
 				foreach ($temparray as $temp) {
 				
