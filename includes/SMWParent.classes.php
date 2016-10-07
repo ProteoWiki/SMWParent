@@ -103,7 +103,7 @@ class SMWParent {
 			}
 		}
 
-		return $parentnout;
+		return $parentout;
 
 	}
 
