@@ -59,7 +59,7 @@ class SMWParent {
 
 		foreach ( $link_properties as $prop ) {
 
-			$results = self::getQueryResults( "[[$child_text]]", $link_properties, false );
+			$results = self::getQueryResults( "[[$child_text]]", array_unshift( $print_properties, $prop ), false );
 
 			// In theory, there is only one row
 			while ( $row = $results->getNext() ) {
