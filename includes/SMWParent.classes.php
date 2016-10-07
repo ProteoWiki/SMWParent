@@ -194,7 +194,7 @@ class SMWParent {
 			if ( is_object(Title::newFromText($entry)) ) {
 				$titleObj = Title::newFromText($entry);
 				$wikiPage = WikiPage::factory( $titleObj );
-				$categories_objects = $wikiPage::getCategories();
+				$categories_objects = $wikiPage->getCategories();
 
 				while ( $category = $categories_objects->next() ) {
 					if ( is_object( $category ) ) {
