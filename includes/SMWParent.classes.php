@@ -259,21 +259,6 @@ class SMWParent {
 	}
 
 
-	private static function makeLink ( $fulltitle ) {
-
-		$link = $fulltitle;
-
-		if ( is_object(Title::newFromText($fulltitle)) ) {
-			$title = Title::newFromText($fulltitle)->getText();
-	
-			$link = "[[$fulltitle|$title]]";
-		}
-
-		return $link;
-	}
-
-
-
 	/**
 	* This function returns to results of a certain query
 	* Thank you Yaron Koren for advices concerning this code

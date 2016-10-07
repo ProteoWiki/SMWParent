@@ -9,6 +9,8 @@ class SMWParentParser {
 	public static function parseParent( $parser, $frame, $args ) {
 		
 		global $wgSMWParentdefault;
+		global $wgSMWParentTypeProperty;
+		global $wgSMWParentProps;
 
 		// Whether returning a link or not
 		$link = 0;
@@ -36,10 +38,31 @@ class SMWParentParser {
 				$link = 1;
 			}
 		}
-		
+
+		$input = array();
+		$input["child_text"] = $child_text;
+		$input["parent_type"] = $parent_type;
+		$input["link_properties"] = $wgSMWParentProps;
+		$input["type_properties"] = $wgSMWParentTypeProperty;
+		$input["level"] = 1;
+		$input["print_properties"] = $wgSMWParentPrintProps;
+
 		$list = SMWParent::executeGetParent( $input );
 		
-		// TODO Process below
+		if ( $link > 0 ) {
+
+			$newlist = array();
+
+			foreach ( $list as $entry ) {
+				array_push( $newlist, self::makeLink( $entry ) );
+			}
+
+			$list = $newlist;
+		}
+		
+		// TODO: Further processing later
+		return join(",", $list );
+
 		
 	}
 	
@@ -75,11 +98,51 @@ class SMWParentParser {
 				$link = 1;
 			}
 		}
-		
+
+		$input = array();
+		$input["parent_text"] = $child_text;
+		$input["children_type"] = $parent_type;
+		$input["link_properties"] = $wgSMWParentProps;
+		$input["type_properties"] = $wgSMWParentTypeProperty;
+		$input["level"] = 1;
+		$input["print_properties"] = $wgSMWParentPrintProps;
+
 		$list = SMWParent::executeGetChildren( $input );
+
+		if ( $link > 0 ) {
+
+			$newlist = array();
+
+			foreach ( $list as $entry ) {
+				array_push( $newlist, self::makeLink( $entry ) );
+			}
+
+			$list = $newlist;
+		}
 		
-		// TODO Process below
+		// TODO: Further processing later
+		return join(",", $list );
 
 	}
 	
+
+	/**
+	* This function checks the type of an entry
+	* @param $fulltitle String : text title of a page
+	* @return linked page title
+	*/
+
+	private static function makeLink ( $fulltitle ) {
+
+		$link = $fulltitle;
+
+		if ( is_object(Title::newFromText($fulltitle)) ) {
+			$title = Title::newFromText($fulltitle)->getText();
+	
+			$link = "[[$fulltitle|$title]]";
+		}
+
+		return $link;
+	}
+
 }
