@@ -19,82 +19,23 @@ class SMWParent {
 	private static $parent_round;
 	private static $children_round;
 	
-	public static function executeGetParent(  $parser, $frame, $args ) {
-
-		global $wgSMWParentdefault;
-
-		// Whether returning a link or not
-		$link = 0;
-
-		$parser->disableCache();
-
-		// Let's get first Fulltext of page
-		$child_text =  $parser->getTitle()->getFullText();
-		if ( isset( $args[0] ) ) {
-			$child = trim( $frame->expand( $args[0] ) );
-			if ( $child != '' ) {
-				$child_text = $child;   
-			}
-		}
-
-		$parent_type = $wgSMWParentdefault;
-
-		if ( isset( $args[1] ) ) {
-			$parent_type = trim( $frame->expand( $args[1] ) );
-		}
-
-		if ( isset( $args[2] ) ) {
-			$extra = trim( $frame->expand( $args[2] ) );
-			if ( $extra == 'link' ) {
-				$link = 1;
-			}
-		}
+	public static function executeGetParent( $input ) {
 
 		self::$parent_round = 0;
 
-		// TODO: To fix this
-		// return self::getParent( $child_text, $parent_type, 1, $link );
+		$parent_list = self::getParent( $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+
+        return $parent_list;
 
 	}
 
-	public static function executeGetChildren(  $parser, $frame, $args ) {
-
-		global $wgSMWChildrendefault;
-
-		// Whether returning a link or not
-		$link = 0;
-
-		$parser->disableCache();
-
-		// Let's get first Fulltext of page
-		$parent_text =  $parser->getTitle()->getFullText();
-		if ( isset( $args[0] ) ) {
-
-			$parent = trim( $frame->expand( $args[0] ) );
-			if ( $parent != '' ) {
-				$parent_text = $parent;
-			}
-		}
-
-		$children_type = $wgSMWChildrendefault;
-
-		if ( isset( $args[1] ) ) {
-			$children_type = trim( $frame->expand( $args[1] ) );
-		}
-
-		if ( isset( $args[2] ) ) {
-
-			$extra = trim( $frame->expand( $args[2] ) );
-			if ( $extra == 'link' ) {
-				$link = 1;
-			}
-		}
-
+	public static function executeGetChildren( $input ) {
 
 		self::$children_round = 0;
 
-		// TODO: To fix this
-		// return self::getChildren( $parent_text, $children_type, 1, $link );
+		$children_list = self::getChildren( $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+
+		return $children_list;
 
 	}
 
