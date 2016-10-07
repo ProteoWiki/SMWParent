@@ -25,7 +25,7 @@ class SMWParent {
 
 		$parent_list = self::getParent( $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
 
-        return $parent_list;
+		return $parent_list;
 
 	}
 
@@ -41,7 +41,7 @@ class SMWParent {
 
 	private static function getParent( $child_text, $parent_type, $link_properties, $type_properties, $level=1, $print_properties ) {
 
-		global $wgBioParserSMWParentlimit;
+		global $wgSMWParentlimit;
 
 		// After results query, we add parent round
 		if (! isset(self::$parent_round) ) {
@@ -160,7 +160,7 @@ class SMWParent {
 	// Default level=1, direct child
 	private static function getChildren( $parent_text, $children_type, $link_properties, $type_properties, $level=1, $print_properties ) {
 	
-		global $wgBioParserSMWParentlimit;
+		global $wgSMWParentlimit;
 
 		// After results query, we add parent round
 		if (! isset(self::$children_round) ) {
