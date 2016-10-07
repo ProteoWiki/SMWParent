@@ -50,7 +50,7 @@ class SMWParent {
 		self::$parent_round++;
 
 		// Ancestors limit
-		if ( $wgBioParserSMWParentlimit < self::$parent_round ) {
+		if ( $wgSMWParentlimit < self::$parent_round ) {
 			return array();
 		} 
 
@@ -169,7 +169,7 @@ class SMWParent {
 		self::$children_round++;
 
 		// Ancestors limit
-		if ( $wgBioParserSMWParentlimit < self::$children_round ) {
+		if ( $wgSMWParentlimit < self::$children_round ) {
 			return array();
 		}
 
