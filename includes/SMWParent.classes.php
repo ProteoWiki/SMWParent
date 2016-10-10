@@ -23,7 +23,7 @@ class SMWParent {
 
 		self::$parent_round = 0;
 
-		$parent_list = self::getParent( $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+		$parent_list = self::getElement( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
 
 		return $parent_list;
 
@@ -33,9 +33,83 @@ class SMWParent {
 
 		self::$children_round = 0;
 
-		$children_list = self::getChildren( $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+		$children_list = self::getElement( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
 
 		return $children_list;
+
+	}
+
+	private static function getElement( $type="parent", $target_text, $source_type, $link_properties, $type_properties, $level=1, $print_properties ) {
+
+		global $wgSMWParentlimit;
+
+		// After results query, we add parent round
+		if (! isset(self::$parent_round) ) {
+			self::$parent_round = 0;
+		}
+		self::$parent_round++;
+
+		// Ancestors limit
+		if ( $wgSMWParentlimit < self::$parent_round ) {
+			return array();
+		}
+
+		// Query -> current page
+		$targetlist = array();
+
+		foreach ( $link_properties as $prop ) {
+
+			if ( $type === "parent" ) {
+				$printout_properties = $print_properties;
+				array_unshift( $printout_properties, $prop );
+				$results = self::getQueryResults( "[[$target_text]]", $printout_properties, false );
+			} else {
+				$results = self::getQueryResults( "[[$prop::$target_text]]", $print_properties, true );
+			}
+
+			// In theory, there is only one row
+			while ( $row = $results->getNext() ) {
+
+				$targetCont = $row[1];
+				if ( !empty($targetCont) ) {
+
+					while ( $obj = $targetCont->getNextObject() ) {
+
+						array_push( $targetlist, $obj->getWikiValue() );
+					}
+				}
+
+			}
+
+		}
+
+		// Final ones to retrieve
+		$targetout = array();
+
+		foreach ( $targetlist as $target ) {
+
+			// Children round
+			if ( ( is_numeric($source_type) && $source_type == $level ) || ( self::isEntryType( $target, $source_type, $type_properties ) ) ) {
+
+				array_push( $targetout, $target );
+		
+			} else {
+
+				// We increase level here
+				$itera = $level + 1;
+				$temparray = self::getParent( $target, $source_type, $link_properties, $type_properties, $itera, $print_properties );
+				
+				foreach ($temparray as $temp) {
+				
+					if ($temp != '') {
+
+						array_push( $targetout, $temp );
+					}
+				}
+			}
+		}
+
+		return $targetout;
 
 	}
 
