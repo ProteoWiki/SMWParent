@@ -54,6 +54,8 @@ call_user_func( function() {
 	// Print properties. Apart from the actual page
 	$GLOBALS['wgSMWParentPrintProps'] = array('');
 
+	// API
+	$wgAPIModules['smwparent'] = 'ApiSMWParent';
 
 });
 
