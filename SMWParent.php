@@ -55,7 +55,7 @@ call_user_func( function() {
 	$GLOBALS['wgSMWParentPrintProps'] = array('');
 
 	// API
-	$wgAPIModules['smwparent'] = 'ApiSMWParent';
+	$GLOBALS['wgAPIModules']['smwparent'] = 'ApiSMWParent';
 
 });
 
