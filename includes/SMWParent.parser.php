@@ -94,14 +94,6 @@ class SMWParentParser {
 
 		if ( count( $args ) > 2 ) {
 
-			/** Backcompatibility **/
-			if ( isset( $args[2] ) ) {
-				$extra = trim( $frame->expand( $args[2] ) );
-				if ( $extra == 'link' ) {
-					$input['link'] = 1;
-				}
-			}
-
 			for ( $i=2; $i <= count( $args ); $i++ ) {
 				
 				$params = self::processArg( $args[$i], $frame );
