@@ -104,7 +104,7 @@ class SMWParentParser {
 
 			for ( $i=2; $i <= count( $args ); $i++ ) {
 				
-				$params = self::processArg( $args[$i] );
+				$params = self::processArg( $args[$i], $frame );
 
 				/** Backcompatibility **/
 				if ( count( $params ) > 1 ) {
@@ -145,7 +145,7 @@ class SMWParentParser {
 		return $link;
 	}
 
-	private static function processArg( $param ) {
+	private static function processArg( $param, $frame ) {
 
 		$param = trim( $frame->expand( $param ) );
 
