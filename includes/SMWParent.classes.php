@@ -70,8 +70,11 @@ class SMWParent {
 			// In theory, there is only one row
 			while ( $row = $results->getNext() ) {
 
+				$start = 1; // Start point for counting printouts
+
 				if ( $type === "parent" ) {
 					$targetCont = $row[1];
+					$start = 2;
 				} else {
 					$targetCont = $row[0];
 				}
