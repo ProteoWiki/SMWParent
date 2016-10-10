@@ -92,7 +92,7 @@ class SMWParentParser {
 		$input["print_properties"] = $wgSMWParentPrintProps;
 
 
-		if ( array_count( $args ) > 2 ) {
+		if ( count( $args ) > 2 ) {
 
 			/** Backcompatibility **/
 			if ( isset( $args[2] ) ) {
@@ -102,12 +102,12 @@ class SMWParentParser {
 				}
 			}
 
-			for ( $i=2; $i <= array_count( $args ); $i++ ) {
+			for ( $i=2; $i <= count( $args ); $i++ ) {
 				
 				$params = self::processArg( $args[$i] );
 
 				/** Backcompatibility **/
-				if ( array_count( $params ) > 1 ) {
+				if ( count( $params ) > 1 ) {
 					if ( $params[0] == 'link' ) {
 						$input['link'] = 1;
 					}
