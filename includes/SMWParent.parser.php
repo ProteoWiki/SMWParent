@@ -7,7 +7,50 @@ class SMWParentParser {
 
 
 	public static function parseParent( $parser, $frame, $args ) {
+
+		$input = SMWParent::parseElement( "parent", $parser, $frame, $args );
+		$list = SMWParent::executeGetParent( $input );
+
+		// link
+		if ( array_key_exists( "link", $input ) ) {
+
+			$newlist = array();
+
+			foreach ( $list as $entry ) {
+				array_push( $newlist, self::makeLink( $entry ) );
+			}
+
+			$list = $newlist;
+		}
 		
+		// TODO: Further processing later
+		return join(",", $list );
+
+	}
+
+	public static function parseChildren( $parser, $frame, $args ) {
+
+		$input = SMWParent::parseElement( "children", $parser, $frame, $args );
+		$list = SMWParent::executeGetChildren( $input );
+
+		// link
+		if ( array_key_exists( "link", $input ) ) {
+
+			$newlist = array();
+
+			foreach ( $list as $entry ) {
+				array_push( $newlist, self::makeLink( $entry ) );
+			}
+
+			$list = $newlist;
+		}
+		
+		// TODO: Further processing later
+		return join(",", $list );
+	}
+
+	public static function parseElement( $type="parent", $parser, $frame, $args ) {
+
 		global $wgSMWParentdefault;
 		global $wgSMWParentTypeProperty;
 		global $wgSMWParentProps;
@@ -19,116 +62,69 @@ class SMWParentParser {
 		$parser->disableCache();
 
 		// Let's get first Fulltext of page
-		$child_text =  $parser->getTitle()->getFullText();
+		$target_text =  $parser->getTitle()->getFullText();
 		if ( isset( $args[0] ) ) {
-			$child = trim( $frame->expand( $args[0] ) );
-			if ( $child != '' ) {
-				$child_text = $child;   
+			$target = trim( $frame->expand( $args[0] ) );
+			if ( $target != '' ) {
+				$target_text = $target;   
 			}
 		}
 
 		$parent_type = $wgSMWParentdefault;
 
 		if ( isset( $args[1] ) ) {
-			$parent_type = trim( $frame->expand( $args[1] ) );
-		}
-
-		if ( isset( $args[2] ) ) {
-			$extra = trim( $frame->expand( $args[2] ) );
-			if ( $extra == 'link' ) {
-				$link = 1;
-			}
+			$source_type = trim( $frame->expand( $args[1] ) );
 		}
 
 		$input = array();
-		$input["child_text"] = $child_text;
-		$input["parent_type"] = $parent_type;
+
+		if ( $type === "parent" ) {
+			$input["child_text"] = $target_text;
+			$input["parent_type"] = $source_type;
+		} else {
+			$input["parent_text"] = $target_text;
+			$input["child_type"] = $source_type;
+		}
+
 		$input["link_properties"] = $wgSMWParentProps;
 		$input["type_properties"] = $wgSMWParentTypeProperty;
 		$input["level"] = 1;
 		$input["print_properties"] = $wgSMWParentPrintProps;
 
-		$list = SMWParent::executeGetParent( $input );
-		
-		if ( $link > 0 ) {
 
-			$newlist = array();
+		if ( array_count( $args ) > 2 ) {
 
-			foreach ( $list as $entry ) {
-				array_push( $newlist, self::makeLink( $entry ) );
+			/** Backcompatibility **/
+			if ( isset( $args[2] ) ) {
+				$extra = trim( $frame->expand( $args[2] ) );
+				if ( $extra == 'link' ) {
+					$input['link'] = 1;
+				}
 			}
 
-			$list = $newlist;
-		}
-		
-		// TODO: Further processing later
-		return join(",", $list );
+			for ( $i=2; $i <= array_count( $args ); $i++ ) {
+				
+				$params = self::processArg( $args[$i] );
 
-		
+				/** Backcompatibility **/
+				if ( array_count( $params ) > 1 ) {
+					if ( $params[0] == 'link' ) {
+						$input['link'] = 1;
+					}
+
+					if ( strpos( $params[0], "_properties" ) !== false ) {
+						$input[$params[0]] = self::processIntoArray( $params[1] ); 
+					} else {
+						$input[$params[0]] = $params[1];
+					}
+
+				}
+
+			}
+		}
+
+		return( $input );
 	}
-	
-	public static function parseChildren( $parser, $frame, $args ) {
-		
-		global $wgSMWChildrendefault;
-		global $wgSMWParentTypeProperty;
-		global $wgSMWParentProps;
-		global $wgSMWParentPrintProps;
-
-		// Whether returning a link or not
-		$link = 0;
-
-		$parser->disableCache();
-
-		// Let's get first Fulltext of page
-		$parent_text =  $parser->getTitle()->getFullText();
-		if ( isset( $args[0] ) ) {
-
-			$parent = trim( $frame->expand( $args[0] ) );
-			if ( $parent != '' ) {
-				$parent_text = $parent;
-			}
-		}
-
-		$children_type = $wgSMWChildrendefault;
-
-		if ( isset( $args[1] ) ) {
-			$children_type = trim( $frame->expand( $args[1] ) );
-		}
-
-		if ( isset( $args[2] ) ) {
-
-			$extra = trim( $frame->expand( $args[2] ) );
-			if ( $extra == 'link' ) {
-				$link = 1;
-			}
-		}
-
-		$input = array();
-		$input["parent_text"] = $parent_text;
-		$input["children_type"] = $children_type;
-		$input["link_properties"] = $wgSMWParentProps;
-		$input["type_properties"] = $wgSMWParentTypeProperty;
-		$input["level"] = 1;
-		$input["print_properties"] = $wgSMWParentPrintProps;
-
-		$list = SMWParent::executeGetChildren( $input );
-
-		if ( $link > 0 ) {
-
-			$newlist = array();
-
-			foreach ( $list as $entry ) {
-				array_push( $newlist, self::makeLink( $entry ) );
-			}
-
-			$list = $newlist;
-		}
-		
-		// TODO: Further processing later
-		return join(",", $list );
-
-	}
-	
 
 	/**
 	* This function checks the type of an entry
@@ -147,6 +143,25 @@ class SMWParentParser {
 		}
 
 		return $link;
+	}
+
+	private static function processArg( $param ) {
+
+		$param = trim( $frame->expand( $param ) );
+
+		$keyval = explode( "=", $param, 2 );
+
+		$keyvaltrim = array_map('trim', $keyval);
+
+		return $keyvaltrim;
+	}
+
+	private static function processIntoArray( $string ) {
+		
+		$array = explode( ",", $string );
+		$arrayclean = array_map('trim', $array);
+
+		return $arrayclean;
 	}
 
 }
