@@ -35,6 +35,7 @@ call_user_func( function() {
 	$GLOBALS['wgAutoloadClasses']['SMWParent'] = __DIR__ . '/includes/SMWParent.classes.php';
 	$GLOBALS['wgAutoloadClasses']['SMWParentHooks'] = __DIR__ . '/includes/SMWParent.hooks.php';
 	$GLOBALS['wgAutoloadClasses']['SMWParentParser'] = __DIR__ . '/includes/SMWParent.parser.php';
+	$GLOBALS['wgAutoloadClasses']['ApiSMWParent'] = __DIR__ . '/includes/api/SMWParent.api.php';
 
 	// Hooks
 	$GLOBALS['wgHooks']['ParserFirstCallInit'][] = 'SMWParentHooks::onParserFirstCallInit';

@@ -35,12 +35,10 @@
 		"SMWParent": "includes/SMWParent.classes.php",
 		"SMWParentHooks": "includes/SMWParent.hooks.php",
 		"SMWParentParser": "includes/SMWParent.parser.php",
-		"ApiSMWParent": "includes/api/SMWParent.api.parent.php",
-		"ApiSMWChildren": "includes/api/SMWParent.api.children.php"
+		"ApiSMWParent": "includes/api/SMWParent.api.php",
 	},
 	"ApiModules": {
-		"smwparent" : "ApiSMWParent",
-		"smwchildren" : "ApiSMWChildren"
+		"smwparent" : "ApiSMWParent"
 	},
 	"manifest_version": 1
 }
