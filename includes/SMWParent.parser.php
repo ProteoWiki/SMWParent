@@ -83,7 +83,7 @@ class SMWParentParser {
 			$input["parent_type"] = $source_type;
 		} else {
 			$input["parent_text"] = $target_text;
-			$input["child_type"] = $source_type;
+			$input["children_type"] = $source_type;
 		}
 
 		$input["link_properties"] = $wgSMWParentProps;
@@ -94,22 +94,24 @@ class SMWParentParser {
 
 		if ( count( $args ) > 2 ) {
 
-			for ( $i=2; $i <= count( $args ); $i++ ) {
+			for ( $i=2; $i < count( $args ); $i++ ) {
 				
 				$params = self::processArg( $args[$i], $frame );
 
 				/** Backcompatibility **/
-				if ( count( $params ) > 1 ) {
-					if ( $params[0] == 'link' ) {
-						$input['link'] = 1;
-					}
+				if ( count( $params ) > 0 ) {
 
-					if ( strpos( $params[0], "_properties" ) !== false ) {
-						$input[$params[0]] = self::processIntoArray( $params[1] ); 
+					if ( count( $params ) > 1 ) {
+
+						if ( strpos( $params[0], "_properties" ) !== false ) {
+							$input[$params[0]] = self::processIntoArray( $params[1] ); 
+						} else {
+							$input[$params[0]] = $params[1];
+						}
+
 					} else {
-						$input[$params[0]] = $params[1];
+						$input[$params[0]] = 1;
 					}
-
 				}
 
 			}
