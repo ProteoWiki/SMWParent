@@ -70,13 +70,21 @@ class SMWParent {
 			// In theory, there is only one row
 			while ( $row = $results->getNext() ) {
 
-				$targetCont = $row[1];
+				if ( $type === "parent" ) {
+					$targetCont = $row[1];
+				} else {
+					$targetCont = $row[0];
+				}
+
 				if ( !empty($targetCont) ) {
 
+					// TODO: Process printouts below
 					while ( $obj = $targetCont->getNextObject() ) {
 
 						array_push( $targetlist, $obj->getWikiValue() );
 					}
+
+					// TODO: More printout processing...
 				}
 
 			}
@@ -97,7 +105,7 @@ class SMWParent {
 
 				// We increase level here
 				$itera = $level + 1;
-				$temparray = self::getParent( $target, $source_type, $link_properties, $type_properties, $itera, $print_properties );
+				$temparray = self::getElement( $type, $target, $source_type, $link_properties, $type_properties, $itera, $print_properties );
 				
 				foreach ($temparray as $temp) {
 				
