@@ -8,7 +8,7 @@ class SMWParentParser {
 
 	public static function parseParent( $parser, $frame, $args ) {
 
-		$input = SMWParent::parseElement( "parent", $parser, $frame, $args );
+		$input = self::parseElement( "parent", $parser, $frame, $args );
 		$list = SMWParent::executeGetParent( $input );
 
 		// link
@@ -30,7 +30,7 @@ class SMWParentParser {
 
 	public static function parseChildren( $parser, $frame, $args ) {
 
-		$input = SMWParent::parseElement( "children", $parser, $frame, $args );
+		$input = self::parseElement( "children", $parser, $frame, $args );
 		$list = SMWParent::executeGetChildren( $input );
 
 		// link
