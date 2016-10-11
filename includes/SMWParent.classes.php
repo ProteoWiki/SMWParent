@@ -16,55 +16,56 @@ if ( !defined( 'SMW_VERSION' ) ) {
  */
 class SMWParent {
 
-	private static $parent_round;
-	private static $children_round;
+	private static $round;
 	
 	public static function executeGetParent( $input ) {
 
-		self::$parent_round = 0;
+		self::$round = 0;
 
-		$parent_list = self::getElement( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+		$parentList = self::getElement( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
 
-		return $parent_list;
+		return $parentList;
 
 	}
 
 	public static function executeGetChildren( $input ) {
 
-		self::$children_round = 0;
+		self::$round = 0;
 
-		$children_list = self::getElement( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+		$childrenList = self::getElement( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
 
-		return $children_list;
+		return $childrenList;
 
 	}
 
-	private static function getElement( $type="parent", $target_text, $source_type, $link_properties, $type_properties, $level=1, $print_properties ) {
+	private static function getElement( $type="parent", $targetText, $sourceType, $linkProperties, $typeProperties, $level=1, $printProperties ) {
 
 		global $wgSMWParentlimit;
 
 		// After results query, we add parent round
-		if (! isset(self::$parent_round) ) {
-			self::$parent_round = 0;
+		if (! isset(self::$round) ) {
+			self::$round = 0;
 		}
-		self::$parent_round++;
+		self::$round++;
 
 		// Ancestors limit
-		if ( $wgSMWParentlimit < self::$parent_round ) {
+		if ( $wgSMWParentlimit < self::$parentRound ) {
 			return array();
 		}
 
 		// Query -> current page
-		$targetlist = array();
+		$targetList = array();
 
-		foreach ( $link_properties as $prop ) {
+
+		foreach ( $linkProperties as $prop ) {
+
+			$printoutProperties = $printProperties;
 
 			if ( $type === "parent" ) {
-				$printout_properties = $print_properties;
-				array_unshift( $printout_properties, $prop );
-				$results = self::getQueryResults( "[[$target_text]]", $printout_properties, false );
+				array_unshift( $printoutProperties, $prop );
+				$results = self::getQueryResults( "[[$targetText]]", $printoutProperties, false );
 			} else {
-				$results = self::getQueryResults( "[[$prop::$target_text]]", $print_properties, true );
+				$results = self::getQueryResults( "[[$prop::$targetText]]", $printoutProperties, true );
 			}
 
 			// In theory, there is only one row
@@ -79,42 +80,67 @@ class SMWParent {
 					$targetCont = $row[0];
 				}
 
+				$numColumns = count( $row );
+
 				if ( !empty($targetCont) ) {
 
-					// TODO: Process printouts below
+					$pageEntry = null;
+
+					// We assume value is only a single page
 					while ( $obj = $targetCont->getNextObject() ) {
 
-						array_push( $targetlist, $obj->getWikiValue() );
+						$pageEntry = $obj->getWikiValue();
 					}
 
-					// TODO: More printout processing...
-				}
+					$printKeys = array();
+					for ( $v = $start; $v <= $numColumns; $v++ ) {
+						$printKey = $printoutProperties[ $v ];
 
+						$valueCont = $row[ $v ];
+						if ( !empty($valueCont) ) {
+							if ( $valueCont->getCount() > 1 ) {
+								$list = array();
+								while ( $obj = $valueCont->getNextObject() ) {
+									array_push( $list, $obj->getWikiValue() );
+								}
+								$printKeys[$printkey] = $list;
+							} else {
+								while ( $obj = $valueCont->getNextObject() ) {
+									$printKeys[$printkey] = $obj->getWikiValue();
+								}
+							}
+						}
+					}
+
+					if ( $pageEntry ) {
+						$targetList[ $pageEntry ] = $printKeys;
+					}
+				}
 			}
 
 		}
 
 		// Final ones to retrieve
-		$targetout = array();
+		$targetOut = array();
 
-		foreach ( $targetlist as $target ) {
+		foreach ( $targetList as $target => $content ) {
 
 			// Children round
-			if ( ( is_numeric($source_type) && $source_type == $level ) || ( self::isEntryType( $target, $source_type, $type_properties ) ) ) {
+			if ( ( is_numeric($sourceType) && $sourceType == $level ) || ( self::isEntryType( $target, $sourceType, $typeProperties ) ) ) {
 
-				array_push( $targetout, $target );
+				array_push( $targetOut, $target );
 		
 			} else {
 
 				// We increase level here
 				$itera = $level + 1;
-				$temparray = self::getElement( $type, $target, $source_type, $link_properties, $type_properties, $itera, $print_properties );
+				$temparray = self::getElement( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
 				
 				foreach ($temparray as $temp) {
 				
 					if ($temp != '') {
 
-						array_push( $targetout, $temp );
+						array_push( $targetOut, $temp );
 					}
 				}
 			}
@@ -129,21 +155,21 @@ class SMWParent {
 	* This function checks the type of an entry
 	* @param $entry String : entry type
 	* @param $type String: the type checked
-	* @param $type_properties Array: Properties that assign tyoe
+	* @param $typeProperties Array: Properties that assign tyoe
 	* @return boolean
 	*/
 
-	private static function isEntryType( $entry, $type, $type_properties ) {
+	private static function isEntryType( $entry, $type, $typeProperties ) {
 
 		// Are we asking for a category
-		if ( in_array( "Categories", $type_properties ) ) {
+		if ( in_array( "Categories", $typeProperties ) ) {
 
 			if ( is_object(Title::newFromText($entry)) ) {
 				$titleObj = Title::newFromText($entry);
 				$wikiPage = WikiPage::factory( $titleObj );
-				$categories_objects = $wikiPage->getCategories();
+				$categoriesObjects = $wikiPage->getCategories();
 
-				while ( $category = $categories_objects->next() ) {
+				while ( $category = $categoriesObjects->next() ) {
 					if ( is_object( $category ) ) {
 						$title = $category->getBaseText();
 						if ( $title == $type ) {
