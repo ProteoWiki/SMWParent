@@ -98,15 +98,15 @@ class SMWParent {
 
 						$valueCont = $row[ $v ];
 						if ( !empty($valueCont) ) {
-							if ( $valueCont->getCount() > 1 ) {
+							if ( count( $valueCont ) > 1 ) {
 								$list = array();
 								while ( $obj = $valueCont->getNextObject() ) {
 									array_push( $list, $obj->getWikiValue() );
 								}
-								$printKeys[$printkey] = $list;
+								$printKeys[$printKey] = $list;
 							} else {
 								while ( $obj = $valueCont->getNextObject() ) {
-									$printKeys[$printkey] = $obj->getWikiValue();
+									$printKeys[$printKey] = $obj->getWikiValue();
 								}
 							}
 						}
@@ -146,7 +146,7 @@ class SMWParent {
 			}
 		}
 
-		return $targetout;
+		return $targetOut;
 
 	}
 
