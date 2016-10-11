@@ -206,7 +206,7 @@ class SMWParent {
 			}
 
 			if ( $results->getCount() > 0 ) {
-				$targetList[ $prop ] = $array();
+				$targetList[ $prop ] = array();
 			}
 
 			// In theory, there is only one row
@@ -294,18 +294,16 @@ class SMWParent {
 					// TODO: Make up a tree
 	
 					$itera = $level + 1;
-					$temparray = self::getElement( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
+					$temparray = self::getElementTree( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
 					
 					if ( count( $temparray ) > 0 ) {
 						$targetOut[ $prop ][ $target ] = array();
 					}
 
-					foreach ( $temparray as $temp ) {
-					
-						if ( $temp != '' ) {
-	
-							array_push( $targetOut[ $prop ][ $target ], $temp );
-						}
+					foreach ( $temparray as $key => $temp ) {
+
+						$targetOut[ $prop ][ $target ][ $key ] = $temp;
+
 					}
 				}
 			}
