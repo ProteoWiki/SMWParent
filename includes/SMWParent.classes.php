@@ -49,7 +49,7 @@ class SMWParent {
 		self::$round++;
 
 		// Ancestors limit
-		if ( $wgSMWParentlimit < self::$parentRound ) {
+		if ( $wgSMWParentlimit < self::$round ) {
 			return array();
 		}
 
