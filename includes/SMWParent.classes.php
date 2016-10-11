@@ -71,13 +71,15 @@ class SMWParent {
 			// In theory, there is only one row
 			while ( $row = $results->getNext() ) {
 
-				$start = 1; // Start point for counting printouts
+				$start = 2; // Start point for counting printouts
+				$add = 0;
 
 				if ( $type === "parent" ) {
 					$targetCont = $row[1];
-					$start = 2;
 				} else {
 					$targetCont = $row[0];
+					$start = 1;
+					$add = 1;
 				}
 
 				$numColumns = count( $row );
@@ -95,20 +97,22 @@ class SMWParent {
 					$printKeys = array();
 					for ( $v = $start; $v < $numColumns; $v++ ) {
 
-						if ( array_key_exists( $v - 1, $printoutProperties ) && array_key_exists( $v, $row ) ) {
+						if ( array_key_exists( $v - 1, $printoutProperties ) && array_key_exists( $v + $add, $row ) ) {
 
 							$printKey = $printoutProperties[ $v - 1 ];
-							$valueCont = $row[ $v ];
+							$valueCont = $row[ $v + $add ];
 
 							if ( $valueCont && !empty($valueCont) ) {
 								if ( count( $valueCont ) > 1 ) {
 									$list = array();
 									while ( $obj = $valueCont->getNextObject() ) {
+										// TODO: We might be interested in handling type here
 										array_push( $list, $obj->getWikiValue() );
 									}
 									$printKeys[$printKey] = $list;
 								} else {
 									while ( $obj = $valueCont->getNextObject() ) {
+										// TODO: We might be interested in handling type here
 										$printKeys[$printKey] = $obj->getWikiValue();
 									}
 								}
@@ -133,11 +137,15 @@ class SMWParent {
 			// Children round
 			if ( ( is_numeric($sourceType) && $sourceType == $level ) || ( self::isEntryType( $target, $sourceType, $typeProperties ) ) ) {
 
-				array_push( $targetOut, $target );
+				$struct = array();
+				$struct[ $target ] = $content;
+				array_push( $targetOut, $struct );
 		
 			} else {
 
-				// We increase level here
+				// We increase level here.
+				// TODO: Make up a tree
+
 				$itera = $level + 1;
 				$temparray = self::getElement( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
 				
@@ -151,6 +159,7 @@ class SMWParent {
 			}
 		}
 
+		// Returns an array of hashes
 		return $targetOut;
 
 	}

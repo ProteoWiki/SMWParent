@@ -9,7 +9,10 @@ class SMWParentParser {
 	public static function parseParent( $parser, $frame, $args ) {
 
 		$input = self::parseElement( "parent", $parser, $frame, $args );
-		$list = SMWParent::executeGetParent( $input );
+		$listStruct = SMWParent::executeGetParent( $input );
+
+		// TODO: For now we keep the keys
+		$list = array_keys( $listStruct );
 
 		// link
 		if ( array_key_exists( "link", $input ) ) {
@@ -31,7 +34,10 @@ class SMWParentParser {
 	public static function parseChildren( $parser, $frame, $args ) {
 
 		$input = self::parseElement( "children", $parser, $frame, $args );
-		$list = SMWParent::executeGetChildren( $input );
+		$listStruct = SMWParent::executeGetChildren( $input );
+
+		// TODO: For now we keep the keys
+		$list = array_keys( $listStruct );
 
 		// link
 		if ( array_key_exists( "link", $input ) ) {
