@@ -93,22 +93,27 @@ class SMWParent {
 					}
 
 					$printKeys = array();
-					for ( $v = $start; $v <= $numColumns; $v++ ) {
-						$printKey = $printoutProperties[ $v ];
+					for ( $v = $start; $v < $numColumns; $v++ ) {
 
-						$valueCont = $row[ $v ];
-						if ( !empty($valueCont) ) {
-							if ( count( $valueCont ) > 1 ) {
-								$list = array();
-								while ( $obj = $valueCont->getNextObject() ) {
-									array_push( $list, $obj->getWikiValue() );
-								}
-								$printKeys[$printKey] = $list;
-							} else {
-								while ( $obj = $valueCont->getNextObject() ) {
-									$printKeys[$printKey] = $obj->getWikiValue();
+						if ( array_key_exists( $v - 1, $printoutProperties ) && array_key_exists( $v, $row ) ) {
+
+							$printKey = $printoutProperties[ $v - 1 ];
+							$valueCont = $row[ $v ];
+
+							if ( $valueCont && !empty($valueCont) ) {
+								if ( count( $valueCont ) > 1 ) {
+									$list = array();
+									while ( $obj = $valueCont->getNextObject() ) {
+										array_push( $list, $obj->getWikiValue() );
+									}
+									$printKeys[$printKey] = $list;
+								} else {
+									while ( $obj = $valueCont->getNextObject() ) {
+										$printKeys[$printKey] = $obj->getWikiValue();
+									}
 								}
 							}
+
 						}
 					}
 
