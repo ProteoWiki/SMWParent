@@ -12,7 +12,7 @@ class SMWParentParser {
 		$listStruct = SMWParent::executeGetParent( $input );
 
 		// TODO: For now we keep the keys
-		$list = array_keys( $listStruct );
+		$list = self::getArrayKeys( $listStruct );
 
 		// link
 		if ( array_key_exists( "link", $input ) ) {
@@ -126,6 +126,26 @@ class SMWParentParser {
 		return( $input );
 	}
 
+
+	/**
+	* Converting structures
+	* @param $array Array of structs with only one key
+    * @return Actual keys
+	*/
+
+	private static function getArrayKeys( $array ) {
+
+		$keys = array();
+
+		foreach ( $array as $element ) {
+			foreach ( $element as $key => $value ) {
+				array_push( $keys, $key );
+			}
+		}
+		
+		return $keys;
+	}
+
 	/**
 	* This function checks the type of an entry
 	* @param $fulltitle String : text title of a page
@@ -163,5 +183,6 @@ class SMWParentParser {
 
 		return $arrayclean;
 	}
+
 
 }
