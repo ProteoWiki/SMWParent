@@ -37,7 +37,7 @@ class SMWParentParser {
 		$listStruct = SMWParent::executeGetChildren( $input );
 
 		// TODO: For now we keep the keys
-		$list = array_keys( $listStruct );
+		$list = self::getArrayKeys( $listStruct );
 
 		// link
 		if ( array_key_exists( "link", $input ) ) {
