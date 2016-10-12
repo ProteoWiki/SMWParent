@@ -145,6 +145,20 @@ class SMWParentParser {
 		
 		return $keys;
 	}
+	
+	/**
+	* Get the leaves of the tree
+	* @param $tree Tree of relationships
+    * @return list of leaves
+	*/
+
+	private static function getLeavesTree( $tree ) {
+
+		$leaves = array();
+
+		
+		return $leaves;
+	}
 
 	/**
 	* This function checks the type of an entry
