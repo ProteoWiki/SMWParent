@@ -24,8 +24,11 @@ class SMWParent {
 
 		$out = array();
 				
-		$out[ $input['child_text'] ] = self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
-
+		$out[ $input['child_text'] ] = array(
+			"type" => "start",
+			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] )
+		);
+		
 		return $out;
 
 	}
@@ -35,8 +38,11 @@ class SMWParent {
 		self::$round = 0;
 		
 		$out = array();
-
-		$out[ $input['parent_text'] ] = self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] );
+		
+		$out[ $input['parent_text'] ] = array(
+			"type" => "start",
+			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] )
+		);
 		
 		return $out;
 
@@ -155,24 +161,23 @@ class SMWParent {
 					$struct = array();
 					$struct[ $target ] = array();
 					// For now, only printout in the last one
+					$struct[ $target ]["type"] = "end";
 					$struct[ $target ]["printouts"] = $content;
 					array_push( $targetOut[ $prop ], $struct );
 			
 				} else {
 	
 					// We increase level here.
-					// TODO: Make up a tree
+					$targetOut[ $prop ][ $target ]["type"] = "mid";
+					$targetOut[ $prop ][ $target ]["printouts"] = $content;
 	
 					$itera = $level + 1;
 					$temparray = self::getElementTree( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
 					
-					if ( count( $temparray ) > 0 ) {
-						$targetOut[ $prop ][ $target ] = array();
-					}
 
 					foreach ( $temparray as $key => $temp ) {
 
-						$targetOut[ $prop ][ $target ][ $key ] = $temp;
+						$targetOut[ $prop ][ $target ]["link"][ $key ] = $temp;
 
 					}
 				}
