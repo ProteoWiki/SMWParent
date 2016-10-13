@@ -159,11 +159,10 @@ class SMWParent {
 				if ( ( is_numeric($sourceType) && $sourceType == $level ) || ( self::isEntryType( $target, $sourceType, $typeProperties ) ) ) {
 	
 					$struct = array();
-					$struct[ $target ] = array();
 					// For now, only printout in the last one
-					$struct[ $target ]["type"] = "end";
-					$struct[ $target ]["printouts"] = $content;
-					array_push( $targetOut[ $prop ], $struct );
+					$struct["type"] = "end";
+					$struct["printouts"] = $content;
+					array_push( $targetOut[ $prop ], array( $target => $struct )  );
 			
 				} else {
 	
