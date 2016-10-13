@@ -43,7 +43,7 @@ class SMWParent {
 		$out[ $input['parent_text'] ] = array(
 			"type" => "start",
 			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
-			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )		
+			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'] )		
 		);
 		
 		return $out;
@@ -204,13 +204,13 @@ class SMWParent {
 	* @element string
 	* @properties Array of properties
 	**/
-	public static function getProperties( $element, $properties ) {
+	public static function getProperties( $element, $printoutProperties ) {
 
 		// Values
 		$printKeys = array();
 
 		// Semantic query
-		$results = self::getQueryResults( "[[$element]]", $properties, false ); // To check
+		$results = self::getQueryResults( "[[$element]]", $printoutProperties, false ); // To check
 
 		// In theory, there is only one row
 		while ( $row = $results->getNext() ) {
