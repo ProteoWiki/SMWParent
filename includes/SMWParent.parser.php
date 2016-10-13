@@ -14,8 +14,7 @@ class SMWParentParser {
 		$leaves = array();
 		$leaves = self::getLeavesTree( $listStruct, $leaves );
 
-		$leaves = $list;
-		$list = self::getArrayKeys( $listStruct );
+		$list = self::getArrayKeys( $leaves );
 
 		// link
 		if ( array_key_exists( "link", $input ) ) {
@@ -42,8 +41,7 @@ class SMWParentParser {
 		$leaves = array();
 		$leaves = self::getLeavesTree( $listStruct, $leaves );
 
-		$leaves = $list;
-		$list = self::getArrayKeys( $listStruct );
+		$list = self::getArrayKeys( $leaves );
 
 		// link
 		if ( array_key_exists( "link", $input ) ) {
