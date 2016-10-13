@@ -162,7 +162,7 @@ class SMWParent {
 					// For now, only printout in the last one
 					$struct["type"] = "end";
 					$struct["printouts"] = $content;
-					array_push( $targetOut[ $prop ], array( $target => $struct )  );
+					$targetOut[ $prop ][ $target ] = $struct;
 			
 				} else {
 	
@@ -184,7 +184,7 @@ class SMWParent {
 							$targetOut[ $prop ][ $target ]["link"][ $key ] = array();
 						}
 
-						array_push( $targetOut[ $prop ][ $target ]["link"][ $key ], $temp );
+						$targetOut[ $prop ][ $target ]["link"][ $key ] = $temp;
 
 					}
 				}
