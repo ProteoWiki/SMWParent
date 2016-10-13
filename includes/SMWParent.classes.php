@@ -26,7 +26,8 @@ class SMWParent {
 				
 		$out[ $input['child_text'] ] = array(
 			"type" => "start",
-			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] )
+			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
+			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )
 		);
 		
 		return $out;
@@ -41,7 +42,8 @@ class SMWParent {
 		
 		$out[ $input['parent_text'] ] = array(
 			"type" => "start",
-			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] )
+			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
+			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )		
 		);
 		
 		return $out;
@@ -195,6 +197,70 @@ class SMWParent {
 		// Returns an array of hashes
 		return $targetOut;
 
+	}
+
+	/** 
+	* Getting a list of properties
+	* @element string
+	* @properties Array of properties
+	**/
+	public static function getProperties( $element, $properties ) {
+
+		// Values
+		$printKeys = array();
+
+		// Semantic query
+		$results = self::getQueryResults( "[[$element]]", $properties, false ); // To check
+
+		// In theory, there is only one row
+		while ( $row = $results->getNext() ) {
+
+			$start = 2; // Start point for counting printouts
+			$add = 0;
+
+			$targetCont = $row[1];
+
+			$numColumns = count( $row );
+
+			if ( !empty($targetCont) ) {
+
+				$pageEntry = null;
+
+				// We assume value is only a single page
+				while ( $obj = $targetCont->getNextObject() ) {
+
+					$pageEntry = $obj->getWikiValue();
+				}
+
+				for ( $v = $start; $v < $numColumns; $v++ ) {
+
+					if ( array_key_exists( $v - 1, $printoutProperties ) && array_key_exists( $v + $add, $row ) ) {
+
+						$printKey = $printoutProperties[ $v - 1 ];
+						$valueCont = $row[ $v + $add ];
+
+						if ( $valueCont && !empty($valueCont) ) {
+							if ( count( $valueCont ) > 1 ) {
+								$list = array();
+								while ( $obj = $valueCont->getNextObject() ) {
+									// TODO: We might be interested in handling type here
+									array_push( $list, $obj->getWikiValue() );
+								}
+								$printKeys[$printKey] = $list;
+							} else {
+								while ( $obj = $valueCont->getNextObject() ) {
+									// TODO: We might be interested in handling type here
+									$printKeys[$printKey] = $obj->getWikiValue();
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}
+	
+		return $printKeys;
 	}
 
 
