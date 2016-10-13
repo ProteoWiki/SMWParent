@@ -177,7 +177,11 @@ class SMWParent {
 
 					foreach ( $temparray as $key => $temp ) {
 
-						$targetOut[ $prop ][ $target ]["link"][ $key ] = $temp;
+						if ( ! array_key_exists( $key, $targetOut[ $prop ][ $target ]["link"] ) ) {
+							$targetOut[ $prop ][ $target ]["link"][ $key ] = array();
+						}
+
+						array_push( $targetOut[ $prop ][ $target ]["link"][ $key ], $temp );
 
 					}
 				}
