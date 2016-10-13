@@ -164,13 +164,12 @@ class SMWParentParser {
 				array_push( $leaves, array( $key => $content ) );
 			} else {
 				if ( is_array($content) && array_key_exists( "link", $content ) ) {
+
 					$links = $content["link"];
 					// Iterate links
-					foreach ( $links as $link => $entries ) {
-						if ( is_array( $entries ) ) {
-							foreach ( $entries as $entry ) {
-								$leaves = self::getLeavesTree( $entry, $leaves );
-							}
+					foreach ( $links as $link ) {
+						foreach ( $link as $entry => $content ) {
+								$leaves = self::getLeavesTree( array( $entry => $content ), $leaves );
 						}
 					}
 				}
