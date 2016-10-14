@@ -164,7 +164,7 @@ class SMWParentParser {
 
 		foreach ( $tree as $key => $content ) {
 
-			if ( is_array($content) && array_key_exists( "type", $content ) && $content["type"] === "end" ) {
+			if ( is_array($content) && array_key_exists( "pos", $content ) && $content["pos"] === "end" ) {
 				array_push( $leaves, array( $key => $content ) );
 			} else {
 				if ( is_array($content) && array_key_exists( "link", $content ) ) {

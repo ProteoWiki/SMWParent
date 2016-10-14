@@ -25,7 +25,7 @@ class SMWParent {
 		$out = array();
 				
 		$out[ $input['child_text'] ] = array(
-			"type" => "start",
+			"pos" => "start",
 			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
 			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )
 		);
@@ -41,7 +41,7 @@ class SMWParent {
 		$out = array();
 		
 		$out[ $input['parent_text'] ] = array(
-			"type" => "start",
+			"pos" => "start",
 			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
 			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'] )		
 		);
@@ -157,21 +157,25 @@ class SMWParent {
 
 			foreach ( $matches as $target => $content ) {
 	
-				// Children round
-				if ( ( is_numeric($sourceType) && $sourceType == $level ) || ( self::isEntryType( $target, $sourceType, $typeProperties ) ) ) {
+				// Retrieve properties
+				$typePropertiesValues = self::getProperties( $target, $typeProperties );
+
+				if ( ( is_numeric( $sourceType ) && $sourceType == $level ) || ( self::checkType( $sourceType, $typePropertiesValues ) ) ) {
 	
 					$struct = array();
 					// For now, only printout in the last one
-					$struct["type"] = "end";
+					$struct["pos"] = "end";
 					$struct["printouts"] = $content;
+					$struct["type"] = $typePropertiesValues;
 					$targetOut[ $prop ][ $target ] = $struct;
 			
 				} else {
 	
 					// We increase level here.
-					$targetOut[ $prop ][ $target ]["type"] = "mid";
+					$targetOut[ $prop ][ $target ]["pos"] = "mid";
 					$targetOut[ $prop ][ $target ]["printouts"] = $content;
-	
+					$targetOut[ $prop ][ $target ]["type"] = $typePropertiesValues;
+
 					$itera = $level + 1;
 					$temparray = self::getElementTree( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
 					
@@ -259,7 +263,31 @@ class SMWParent {
 				}
 			}
 		}
-	
+
+		// Include the case of the Categories here
+		if ( in_array( "Categories", $printoutProperties ) ) {
+
+			if ( is_object(Title::newFromText( $element ) ) ) {
+				$titleObj = Title::newFromText( $element );
+				$wikiPage = WikiPage::factory( $titleObj );
+				$categoriesObjects = $wikiPage->getCategories();
+
+				// Let's put array by default
+				$categoryValues = array();
+
+				while ( $category = $categoriesObjects->next() ) {
+					if ( is_object( $category ) ) {
+						$title = $category->getBaseText();
+						array_push( $categoryValues, $title );
+					}
+				}
+
+				$printKeys["Categories"] = $categoryValues;
+
+			}
+
+		}
+
 		return $printKeys;
 	}
 
@@ -267,32 +295,26 @@ class SMWParent {
 	/**
 	* This function checks the type of an entry
 	* @param $entry String : entry type
-	* @param $type String: the type checked
 	* @param $typeProperties Array: Properties that assign tyoe
 	* @return boolean
 	*/
 
-	private static function isEntryType( $entry, $type, $typeProperties ) {
+	private static function checkType( $type, $typePropertiesValues ) {
 
-		// Are we asking for a category
-		if ( in_array( "Categories", $typeProperties ) ) {
-
-			if ( is_object(Title::newFromText($entry)) ) {
-				$titleObj = Title::newFromText($entry);
-				$wikiPage = WikiPage::factory( $titleObj );
-				$categoriesObjects = $wikiPage->getCategories();
-
-				while ( $category = $categoriesObjects->next() ) {
-					if ( is_object( $category ) ) {
-						$title = $category->getBaseText();
-						if ( $title == $type ) {
-							return true;
-						}
-					}
+		foreach ( $typePropertiesValues as $property => $values ) {
+			if ( is_array( $values ) ) {
+				if ( in_array( $type, $values ) ) {
+					return true;
+				}
+			} else {
+				if ( $type == $values ) {
+					return true;
 				}
 			}
-
 		}
+
+		return false;
+
 	}
 
 
