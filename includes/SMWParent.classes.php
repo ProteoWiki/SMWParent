@@ -22,6 +22,10 @@ class SMWParent {
 
 		self::$round = 0;
 
+		$input['property_types'] = array();
+		$input['property_types'] = self::retrievePropertyTypes( $input['property_types'], $input['type_properties'] );
+		$input['property_types'] = self::retrievePropertyTypes( $input['property_types'], $input['print_properties'] );
+
 		$out = array();
 				
 		$out[ $input['child_text'] ] = array(
@@ -38,7 +42,11 @@ class SMWParent {
 	public static function executeGetChildren( $input ) {
 
 		self::$round = 0;
-		
+
+		$input['property_types'] = array();
+		$input['property_types'] = self::retrievePropertyTypes( $input['property_types'], $input['type_properties'] );
+		$input['property_types'] = self::retrievePropertyTypes( $input['property_types'], $input['print_properties'] );
+
 		$out = array();
 		
 		$out[ $input['parent_text'] ] = array(
@@ -287,6 +295,32 @@ class SMWParent {
 		}
 
 		return $printKeys;
+	}
+
+	/**
+	* This function is for storing types of properties
+	* @param $store : Array the store of the types
+	* @param $properties Array: List of properties
+	* @return $store
+	*/
+	private static function retrievePropertyTypes( $store, $properties ) {
+
+		foreach ( $properties as $property ) {
+
+			// We skip category
+			if ( $property !== "Categories" ) {
+
+				// We query Has Type property
+				$result = self::getProperties( "Property:".$property, array("Has Type") );
+
+				if ( array_key_exists( "Has Type", $result ) ) {
+					$store[ $property ]  = $result["Has Type"];
+				}
+			}
+		}
+
+		return $store;
+
 	}
 
 
