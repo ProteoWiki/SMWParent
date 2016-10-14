@@ -26,6 +26,7 @@ class SMWParent {
 				
 		$out[ $input['child_text'] ] = array(
 			"pos" => "start",
+			"type" => self::getProperties( $input['child_text'], $input['type_properties'] ),
 			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
 			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )
 		);
@@ -42,8 +43,9 @@ class SMWParent {
 		
 		$out[ $input['parent_text'] ] = array(
 			"pos" => "start",
+			"type" => self::getProperties( $input['parent_text'], $input['type_properties'] ),
 			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
-			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'] )		
+			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'] )
 		);
 		
 		return $out;
@@ -269,17 +271,13 @@ class SMWParent {
 
 			if ( is_object(Title::newFromText( $element ) ) ) {
 				$titleObj = Title::newFromText( $element );
-				$wikiPage = WikiPage::factory( $titleObj );
-				$categoriesObjects = $wikiPage->getCategories();
+				$categoryPages = $titleObj->getParentCategories();
 
-				// Let's put array by default
 				$categoryValues = array();
 
-				while ( $category = $categoriesObjects->next() ) {
-					if ( is_object( $category ) ) {
-						$title = $category->getBaseText();
-						array_push( $categoryValues, $title );
-					}
+				foreach ( $categoryPages as $categoryPage ) {
+					$parts = explode( ":", $categoryPage, 2 );
+					array_push( $categoryValues, $parts[0] );
 				}
 
 				$printKeys["Categories"] = $categoryValues;
