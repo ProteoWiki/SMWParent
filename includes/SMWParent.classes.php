@@ -311,10 +311,10 @@ class SMWParent {
 			if ( $property !== "Categories" ) {
 
 				// We query Has Type property
-				$result = self::getProperties( "Property:".$property, array("Has Type") );
+				$result = self::getProperties( "Property:".$property, array("Has_Type") );
 
-				if ( array_key_exists( "Has Type", $result ) ) {
-					$store[ $property ]  = $result["Has Type"];
+				if ( array_key_exists( "Has_Type", $result ) ) {
+					$store[ $property ]  = $result["Has_Type"];
 				}
 			}
 		}
