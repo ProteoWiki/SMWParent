@@ -52,7 +52,7 @@ call_user_func( function() {
 	// Properties that allow the linking
 	$GLOBALS['wgSMWParentProps'] = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Request');
 	// Print properties. Apart from the actual page
-	$GLOBALS['wgSMWParentPrintProps'] = array('');
+	$GLOBALS['wgSMWParentPrintProps'] = array();
 
 	// API
 	$GLOBALS['wgAPIModules']['smwparent'] = 'ApiSMWParent';

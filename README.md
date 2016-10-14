@@ -24,6 +24,8 @@ $wgSMWChildrendefault = "File"; // Default type of a file
 
 $wgSMWParentProps = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Request'); // Properties that provide de glueing between the different pages.
 
+$wgSMWParentPrintProps = array('Start', 'End'); // Properties associated to an object which are printed
+
 ## Usage
 
 * {{#SMWParent:FULLPAGENAME|PARENT_TYPE/PARENT_LEVEL|link}}
@@ -34,3 +36,8 @@ Params:
 - PARENT_TYPE to retrieve, or alternately up to which level PARENT_LEVEL to reach
 - If input is 'link', resulting pages are shown as links instead of as text.
 
+## TODO
+
+* Producing a full tree from parent and children outputs
+* Design API
+* Better handling of SMW property types
