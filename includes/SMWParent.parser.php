@@ -12,7 +12,7 @@ class SMWParentParser {
 		$listStruct = SMWParent::executeGetParent( $input );
 
 		$leaves = array();
-		$leaves = self::getLeavesTree( $listStruct, $leaves );
+		$leaves = SMWParent::getLeavesTree( $listStruct, $leaves );
 
 		// TODO: Depending on args, also printouts
 
@@ -41,7 +41,7 @@ class SMWParentParser {
 		$listStruct = SMWParent::executeGetChildren( $input );
 
 		$leaves = array();
-		$leaves = self::getLeavesTree( $listStruct, $leaves );
+		$leaves = SMWParent::getLeavesTree( $listStruct, $leaves );
 
 		$list = self::getArrayKeys( $leaves );
 
@@ -152,34 +152,6 @@ class SMWParentParser {
 		}
 		
 		return $keys;
-	}
-	
-	/**
-	* Get the leaves of the tree
-	* @param $tree Tree of relationships
-    * @return list of leaves
-	*/
-
-	private static function getLeavesTree( $tree, $leaves ) {
-
-		foreach ( $tree as $key => $content ) {
-
-			if ( is_array($content) && array_key_exists( "pos", $content ) && $content["pos"] === "end" ) {
-				array_push( $leaves, array( $key => $content ) );
-			} else {
-				if ( is_array($content) && array_key_exists( "link", $content ) ) {
-
-					$links = $content["link"];
-					// Iterate links
-					foreach ( $links as $link ) {
-						foreach ( $link as $entry => $content ) {
-								$leaves = self::getLeavesTree( array( $entry => $content ), $leaves );
-						}
-					}
-				}
-			}
-		}
-		return $leaves;
 	}
 
 	/**

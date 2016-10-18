@@ -52,6 +52,20 @@ class SMWParent {
 
 	}
 
+	public static function executeGetTree( $input ) {
+
+		$childrenOut = self::executeGetChildren( $input );
+		$parentOut = self::executeGetParent( $input );
+
+		// Get the inverse of the parent
+		$parentInvertedTree = self::invertTree( $parentOut );
+
+		// We add the children to the inverted parent structure
+		$out = self::addChildren( $parentInvertedTree, $childrenOut );
+		
+		return $out;
+
+	}
 
 	private static function getElementTree( $type="parent", $targetText, $sourceType, $linkProperties, $typeProperties, $level=1, $printProperties ) {
 
@@ -341,6 +355,67 @@ class SMWParent {
 
 	}
 
+
+	/**
+	* Get the leaves of the tree
+	* @param $tree Tree of relationships
+    * @return list of leaves
+	*/
+
+	public static function getLeavesTree( $tree, $leaves ) {
+
+		foreach ( $tree as $key => $content ) {
+
+			if ( is_array($content) && array_key_exists( "pos", $content ) && $content["pos"] === "end" ) {
+				array_push( $leaves, array( $key => $content ) );
+			} else {
+				if ( is_array($content) && array_key_exists( "link", $content ) ) {
+
+					$links = $content["link"];
+					// Iterate links
+					foreach ( $links as $link ) {
+						foreach ( $link as $entry => $content ) {
+								$leaves = self::getLeavesTree( array( $entry => $content ), $leaves );
+						}
+					}
+				}
+			}
+		}
+		return $leaves;
+	}
+
+	/** inverse an array tree **/
+
+	private static function invertTree( $tree ) {
+
+		$inverted = array();
+
+		$leaves = self::getLeavesTree( $tree );
+
+		return $inverted;
+
+	}
+
+
+	/** Add children nodes to the tree **/
+
+	private static function addChildren( $tree, $childrenOut ) {
+
+		foreach ( $childrenOut as $key => $children ) {
+
+			foreach ( $tree as $keyTree => $content ) {
+				if ( $key == $keyTree ) {
+					$tree[$keyTree] = $children;
+				} else {
+					
+				}
+			}
+
+		}
+
+
+		return $tree;
+	}
 
 	/**
 	* This function returns to results of a certain query
