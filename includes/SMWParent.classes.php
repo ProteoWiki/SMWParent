@@ -411,7 +411,7 @@ class SMWParent {
 
 		$iter = 0;
 
-		$keys = array_keys( $tree );
+		$keys = array_keys( $input["tree"] );
 
 		// TODO: Fix iteration here
 
@@ -426,7 +426,8 @@ class SMWParent {
 
 				if ( array_key_exists( "link", $value ) ) {
 					foreach( $value["link"] as $link => $content ) {
-						$input["keys"] = self::getPathKeys( $content, $input["keys"], $input["struct"] );
+						$input["tree"] = $content;
+						$input["keys"] = self::getPathKeys( $input );
 					}
 				}
 			}
