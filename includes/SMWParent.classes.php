@@ -407,7 +407,7 @@ class SMWParent {
 	}
 
 
-	private static function getPathKeys( $tree, $listKeys, $struct ) {
+	private static function getPathKeys( $input ) {
 
 		$iter = 0;
 
