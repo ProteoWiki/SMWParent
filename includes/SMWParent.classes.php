@@ -395,19 +395,24 @@ class SMWParent {
 		);
 		$struct = array();
 
-		$input = array( "tree" => $tree, "keys" => $listKeys, "struct" => $struct );
+		$links = array();
 
-		$input = self::getPathKeys( $input );
+		$input = array( "tree" => $tree, "keys" => $listKeys, "struct" => $struct, "links" => $links );
+
+		$pre = null; #start
+
+		$input = self::getPathKeys( $input, $pre );
 
 		var_dump( $input["keys"] );
 		var_dump( $input["struct"] );
+		var_dump( $input["links"] );
 
 		return $inverted;
 
 	}
 
 
-	private static function getPathKeys( $input ) {
+	private static function getPathKeys( $input, $pre=null ) {
 
 		$iter = 0;
 
@@ -427,7 +432,12 @@ class SMWParent {
 				if ( array_key_exists( "link", $value ) ) {
 					foreach( $value["link"] as $link => $content ) {
 						$input["tree"] = $content;
-						$input = self::getPathKeys( $input );
+
+						if ( $pre ) {
+							$input["links"][$pre][$key] = $link;
+						}
+
+						$input = self::getPathKeys( $input, $key );
 					}
 				}
 			}
@@ -442,7 +452,7 @@ class SMWParent {
 	private static function chooseProps( $content ) {
 
 		$struct = array();
-		$props = array( "method", "pos" );
+		$props = array( "type", "pos" );
 
 		foreach ( $content as $key => $value ) {
 			if ( in_array( $key, $props ) ) {
