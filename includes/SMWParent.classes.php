@@ -427,7 +427,7 @@ class SMWParent {
 				if ( array_key_exists( "link", $value ) ) {
 					foreach( $value["link"] as $link => $content ) {
 						$input["tree"] = $content;
-						$input["keys"] = self::getPathKeys( $input );
+						$input = self::getPathKeys( $input );
 					}
 				}
 			}
