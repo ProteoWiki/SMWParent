@@ -63,6 +63,15 @@ class SMWParentParser {
 		return join(",", $list );
 	}
 
+	public static function parseTree( $parser, $frame, $args ) {
+
+		$input = self::parseElement( "tree", $parser, $frame, $args );
+
+		$listStruct = SMWParent::executeGetTree( $input );
+
+		// TO FINISH
+	}
+
 	public static function parseElement( $type="parent", $parser, $frame, $args ) {
 
 		global $wgSMWParentdefault;
@@ -87,17 +96,30 @@ class SMWParentParser {
 		$parent_type = $wgSMWParentdefault;
 
 		if ( isset( $args[1] ) ) {
-			$source_type = trim( $frame->expand( $args[1] ) );
+			$source_type = explode( "," , trim( $frame->expand( $args[1] ) ) );
 		}
 
 		$input = array();
 
 		if ( $type === "parent" ) {
 			$input["child_text"] = $target_text;
-			$input["parent_type"] = $source_type;
-		} else {
+			$input["parent_type"] = $source_type[0];
+		}
+		if ( $type === "children" ) {
 			$input["parent_text"] = $target_text;
-			$input["children_type"] = $source_type;
+			$input["children_type"] = $source_type[0];
+		}
+		if ( $type === "tree" ) {
+			$input["child_text"] = $target_text;
+			$input["parent_text"] = $target_text;
+			$input["parent_type"] = $source_type[0];
+
+			if ( count( $source_type ) > 1 ) {
+				$input["children_type"] = $source_type[1];
+			} else {
+				$input["children_type"] = $source_type[0];
+			}
+
 		}
 
 		$input["link_properties"] = $wgSMWParentProps;

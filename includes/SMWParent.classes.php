@@ -390,11 +390,49 @@ class SMWParent {
 
 		$inverted = array();
 
-		$leaves = self::getLeavesTree( $tree );
+		$listKeys = array(
+			array()
+		);
+
+		$struct = array();
+
+		$listKeys = self::getPathKeys( $tree, $listKeys, $struct );
+		var_dump( $listKeys );
 
 		return $inverted;
 
 	}
+
+
+	private static function getPathKeys( $tree, $listKeys, $struct ) {
+
+		$iter = 0;
+
+		$keys = array_keys( $tree );
+
+		// TODO: FIx iteration here
+
+		if ( count( $keys ) > 1 ) {
+			// Copy array
+		} else {
+
+			foreach ( $tree as $key => $value ) {
+
+				array_unshift( $listKeys[$iter], $key );
+				$struct[$key] = $value; // Not value but other stuff
+
+				if ( array_key_exists( "link", $value ) ) {
+					foreach( $value["link"] as $link => $content ) {
+						$listKeys = self::getPathKeys( $content, $listKeys, $struct );
+					}
+				}
+			}
+		}
+
+		return $listKeys;
+
+	}
+
 
 
 	/** Add children nodes to the tree **/
