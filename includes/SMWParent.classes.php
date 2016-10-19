@@ -494,7 +494,7 @@ class SMWParent {
 	private static function chooseProps( $content ) {
 
 		$struct = array();
-		$props = array( "type", "pos" );
+		$props = array( "type", "pos", "printouts" );
 
 		foreach ( $content as $key => $value ) {
 			if ( in_array( $key, $props ) ) {
