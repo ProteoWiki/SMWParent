@@ -419,6 +419,7 @@ class SMWParent {
 
 	private static function buildInvertedTree( $inverted, $key, $input ) {
 
+
 		if ( ! array_key_exists( $key, $inverted ) ) {
 			$inverted[$key] = array();
 		}
@@ -435,6 +436,11 @@ class SMWParent {
 				if ( ! array_key_exists( "link", $inverted[$key] ) ) {
 					$inverted[$key]["link"] = array();
 				}
+
+				if ( ! array_key_exists( $link, $inverted[$key]["link"] ) ) {
+					$inverted[$key]["link"][$link] = array();
+				}
+
 				// TODO, if element here is the one we 
 				$inverted[$key]["link"][$link] = self::buildInvertedTree( $inverted[$key]["link"][$link], $element, $input );
 			}
