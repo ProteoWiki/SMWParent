@@ -82,14 +82,13 @@ class SMWParent {
 		// Query -> current page
 		$targetList = array();
 		
-
 		foreach ( $linkProperties as $prop ) {
 
 			$printoutProperties = $printProperties;
 
 			if ( $type === "parent" ) {
-				array_unshift( $printoutProperties, $prop );
-				$results = self::getQueryResults( "[[$targetText]]", $printoutProperties, false );
+				#array_unshift( $printoutProperties, $prop );
+				$results = self::getQueryResults( "[[$targetText]]", array( $prop ), false );
 			} else {
 				$results = self::getQueryResults( "[[$prop::$targetText]]", $printoutProperties, true );
 			}
@@ -152,6 +151,9 @@ class SMWParent {
 					}
 
 					if ( $pageEntry ) {
+						if ( $type === "parent" ) {
+							$printKeys = self::getProperties( $pageEntry, $printProperties );
+						}
 						$targetList[$prop][ $pageEntry ] = $printKeys;
 					}
 				}
@@ -181,7 +183,7 @@ class SMWParent {
 					$struct["printouts"] = $content;
 					$struct["type"] = $typePropertiesValues;
 					$targetOut[ $prop ][ $target ] = $struct;
-			
+
 				} else {
 	
 					// We increase level here.
@@ -232,11 +234,11 @@ class SMWParent {
 		// In theory, there is only one row
 		while ( $row = $results->getNext() ) {
 
-			$start = 2; // Start point for counting printouts
+			$start = 1; // Start point for counting printouts
 			$add = 0;
 
-			$targetCont = $row[1];
-
+			$targetCont = $row[0];
+			
 			$numColumns = count( $row );
 
 			if ( !empty($targetCont) ) {
@@ -409,7 +411,9 @@ class SMWParent {
 			}
 		}
 
+		echo "INVERTED\n<br />";
 		var_dump( $inverted );
+		echo "--\n<br />";
 
 		return $inverted;
 
