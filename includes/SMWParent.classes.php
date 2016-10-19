@@ -395,9 +395,9 @@ class SMWParent {
 		$input = self::getPathKeys( $input, $pre, $link );
 
 		// We have the elements
-		var_dump( $input["keys"] );
-		var_dump( $input["struct"] );
-		var_dump( $input["link"] );
+		//var_dump( $input["keys"] );
+		//var_dump( $input["struct"] );
+		//var_dump( $input["link"] );
 
 		// We build the tree
 		// For now we assume only one tree
