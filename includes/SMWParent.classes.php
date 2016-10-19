@@ -390,7 +390,7 @@ class SMWParent {
 
 		$inverted = array();
 
-		$input = array( "tree" => $tree, "keys" => array( array() ), "struct" => array(), "links" => array() );
+		$input = array( "tree" => $tree, "keys" => array( array() ), "struct" => array(), "link" => array() );
 
 		$pre = null; #start
 		$link = null; #start
@@ -400,7 +400,7 @@ class SMWParent {
 		// We have the elements
 		var_dump( $input["keys"] );
 		var_dump( $input["struct"] );
-		var_dump( $input["links"] );
+		var_dump( $input["link"] );
 
 		// We build the tree
 		// For now we assume only one tree TODO: More trees possible, etc.
@@ -419,19 +419,24 @@ class SMWParent {
 
 	private static function buildInvertedTree( $inverted, $key, $input ) {
 
-		$inverted[$key] = array();
+		if ( ! array_key_exists( $key, $inverted ) ) {
+			$inverted[$key] = array();
+		}
 
 		if ( array_key_exists( $key, $input["struct"] ) ) {
 			$inverted[$key] = $input["struct"][$key];
 		}
 
-		if ( array_key_exists( $key, $input["links"] ) ) {
+		if ( array_key_exists( $key, $input["link"] ) ) {
 
-			$linked = $input["links"][$key];
+			$linked = $input["link"][$key];
 			foreach ( $linked as $element => $link ) {
 
+				if ( ! array_key_exists( "link", $inverted[$key] ) ) {
+					$inverted[$key]["link"] = array();
+				}
 				// TODO, if element here is the one we 
-				$inverted[$key]["links"][$link] = self::buildInvertedTree( $inverted[$key]["links"][$link], $element, $input );
+				$inverted[$key]["link"][$link] = self::buildInvertedTree( $inverted[$key]["link"][$link], $element, $input );
 			}
 
 		}
@@ -456,7 +461,7 @@ class SMWParent {
 
 				// Put links
 				if ( $pre && $connect ) {
-					$input["links"][$key][$pre] = $connect;
+					$input["link"][$key][$pre] = $connect;
 				}
 
 				array_unshift( $input["keys"][$iter], $key );
