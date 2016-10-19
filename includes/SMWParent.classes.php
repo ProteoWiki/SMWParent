@@ -393,11 +393,14 @@ class SMWParent {
 		$listKeys = array(
 			array()
 		);
-
 		$struct = array();
 
-		$listKeys = self::getPathKeys( $tree, $listKeys, $struct );
-		var_dump( $listKeys );
+		$input = array( "tree" => $tree, "keys" => $listKeys, "struct" => $struct );
+
+		$input = self::getPathKeys( $input );
+
+		var_dump( $input["keys"] );
+		var_dump( $input["struct"] );
 
 		return $inverted;
 
@@ -410,27 +413,43 @@ class SMWParent {
 
 		$keys = array_keys( $tree );
 
-		// TODO: FIx iteration here
+		// TODO: Fix iteration here
 
 		if ( count( $keys ) > 1 ) {
 			// Copy array
 		} else {
 
-			foreach ( $tree as $key => $value ) {
+			foreach ( $input["tree"] as $key => $value ) {
 
-				array_unshift( $listKeys[$iter], $key );
-				$struct[$key] = $value; // Not value but other stuff
+				array_unshift( $input["keys"][$iter], $key );
+				$input["struct"][$key] = self::chooseProps( $value ); // Not value but other stuff
 
 				if ( array_key_exists( "link", $value ) ) {
 					foreach( $value["link"] as $link => $content ) {
-						$listKeys = self::getPathKeys( $content, $listKeys, $struct );
+						$input["keys"] = self::getPathKeys( $content, $input["keys"], $input["struct"] );
 					}
 				}
 			}
 		}
 
-		return $listKeys;
+		return $input;
 
+	}
+
+	/** Selecting only certain props **/
+
+	private static function chooseProps( $content ) {
+
+		$struct = array();
+		$props = array( "method", "pos" );
+
+		foreach ( $content as $key => $value ) {
+			if ( in_array( $key, $props ) ) {
+				$struct[$key] = $value;
+			}
+		}
+
+		return $struct;
 	}
 
 
