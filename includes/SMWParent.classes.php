@@ -400,7 +400,8 @@ class SMWParent {
 		var_dump( $input["link"] );
 
 		// We build the tree
-		// For now we assume only one tree TODO: More trees possible, etc.
+		// For now we assume only one tree
+		// TODO: More trees possible, etc.
 
 		if ( count( $input["keys"] ) > 0 ) {
 			if ( count( $input["keys"][0] ) ) {
@@ -442,7 +443,7 @@ class SMWParent {
 				if ( array_key_exists( $element, $basetree ) ) {
 					$inverted[$key]["link"][$link][$element] = $basetree[$element];
 				} else { // Otherwise we iterate
-					$inverted[$key]["link"][$link] = self::buildInvertedTree( $inverted[$key]["link"][$link], $element, $input );
+					$inverted[$key]["link"][$link] = self::buildInvertedTree( $inverted[$key]["link"][$link], $element, $input, $basetree );
 				}
 			}
 
