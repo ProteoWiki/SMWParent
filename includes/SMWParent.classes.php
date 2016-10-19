@@ -425,13 +425,13 @@ class SMWParent {
 			$inverted[$key] = $input["struct"][$key];
 		}
 
-		if ( array_key_exists( $key, $input["links"][$key] ) ) {
+		if ( array_key_exists( $key, $input["links"] ) ) {
 
 			$linked = $input["links"][$key];
 			foreach ( $linked as $element => $link ) {
 
 				// TODO, if element here is the one we 
-				$inverted[$key]["links"][$link] = self::buildTree( $inverted[$key]["links"][$link], $element, $input );
+				$inverted[$key]["links"][$link] = self::buildInvertedTree( $inverted[$key]["links"][$link], $element, $input );
 			}
 
 		}
