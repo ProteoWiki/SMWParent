@@ -58,10 +58,7 @@ class SMWParent {
 		$parentOut = self::executeGetParent( $input );
 
 		// Get the inverse of the parent
-		$parentInvertedTree = self::invertTree( $parentOut );
-
-		// We add the children to the inverted parent structure
-		$out = self::addChildren( $parentInvertedTree, $childrenOut );
+		$out = self::growTree( $parentOut, $childrenOut );
 		
 		return $out;
 
@@ -386,7 +383,7 @@ class SMWParent {
 
 	/** inverse an array tree **/
 
-	private static function invertTree( $tree ) {
+	private static function growTree( $tree, $basetree ) {
 
 		$inverted = array();
 
@@ -407,7 +404,7 @@ class SMWParent {
 
 		if ( count( $input["keys"] ) > 0 ) {
 			if ( count( $input["keys"][0] ) ) {
-				$inverted = self::buildInvertedTree( $inverted, $input["keys"][0][0], $input );
+				$inverted = self::buildInvertedTree( $inverted, $input["keys"][0][0], $input, $basetree );
 			}
 		}
 
@@ -417,7 +414,7 @@ class SMWParent {
 
 	}
 
-	private static function buildInvertedTree( $inverted, $key, $input ) {
+	private static function buildInvertedTree( $inverted, $key, $input, $basetree ) {
 
 
 		if ( ! array_key_exists( $key, $inverted ) ) {
@@ -441,8 +438,12 @@ class SMWParent {
 					$inverted[$key]["link"][$link] = array();
 				}
 
-				// TODO, if element here is the one we 
-				$inverted[$key]["link"][$link] = self::buildInvertedTree( $inverted[$key]["link"][$link], $element, $input );
+				// If exists, we add preexisting children
+				if ( array_key_exists( $element, $basetree ) ) {
+					$inverted[$key]["link"][$link][$element] = $basetree[$element];
+				} else { // Otherwise we iterate
+					$inverted[$key]["link"][$link] = self::buildInvertedTree( $inverted[$key]["link"][$link], $element, $input );
+				}
 			}
 
 		}
