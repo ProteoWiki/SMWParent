@@ -399,9 +399,10 @@ class SMWParent {
 
 		$input = array( "tree" => $tree, "keys" => $listKeys, "struct" => $struct, "links" => $links );
 
-		$pre = null; #start
+		$pre = null;
+		$link = null; #start
 
-		$input = self::getPathKeys( $input, $pre );
+		$input = self::getPathKeys( $input, $pre, $link );
 
 		var_dump( $input["keys"] );
 		var_dump( $input["struct"] );
@@ -412,7 +413,7 @@ class SMWParent {
 	}
 
 
-	private static function getPathKeys( $input, $pre=null ) {
+	private static function getPathKeys( $input, $pre=null, $connect=null ) {
 
 		$iter = 0;
 
@@ -426,6 +427,11 @@ class SMWParent {
 
 			foreach ( $input["tree"] as $key => $value ) {
 
+				// Put links
+				if ( $pre && $connect ) {
+					$input["links"][$pre][$key] = $connect;
+				}
+
 				array_unshift( $input["keys"][$iter], $key );
 				$input["struct"][$key] = self::chooseProps( $value ); // Not value but other stuff
 
@@ -433,11 +439,7 @@ class SMWParent {
 					foreach( $value["link"] as $link => $content ) {
 						$input["tree"] = $content;
 
-						if ( $pre ) {
-							$input["links"][$pre][$key] = $link;
-						}
-
-						$input = self::getPathKeys( $input, $key );
+						$input = self::getPathKeys( $input, $key, $link );
 					}
 				}
 			}
