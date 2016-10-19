@@ -390,26 +390,53 @@ class SMWParent {
 
 		$inverted = array();
 
-		$listKeys = array(
-			array()
-		);
-		$struct = array();
+		$input = array( "tree" => $tree, "keys" => array( array() ), "struct" => array(), "links" => array() );
 
-		$links = array();
-
-		$input = array( "tree" => $tree, "keys" => $listKeys, "struct" => $struct, "links" => $links );
-
-		$pre = null;
+		$pre = null; #start
 		$link = null; #start
 
 		$input = self::getPathKeys( $input, $pre, $link );
 
+		// We have the elements
 		var_dump( $input["keys"] );
 		var_dump( $input["struct"] );
 		var_dump( $input["links"] );
 
+		// We build the tree
+		// For now we assume only one tree TODO: More trees possible, etc.
+
+		if ( count( $input["keys"] ) > 0 ) {
+			if ( count( $input["keys"][0] ) ) {
+				$inverted = self::buildInvertedTree( $inverted, $input["keys"][0][0], $input );
+			}
+		}
+
+		var_dump( $inverted );
+
 		return $inverted;
 
+	}
+
+	private static function buildInvertedTree( $inverted, $key, $input ) {
+
+		$inverted[$key] = array();
+
+		if ( array_key_exists( $key, $input["struct"] ) ) {
+			$inverted[$key] = $input["struct"][$key];
+		}
+
+		if ( array_key_exists( $key, $input["links"][$key] ) ) {
+
+			$linked = $input["links"][$key];
+			foreach ( $linked as $element => $link ) {
+
+				// TODO, if element here is the one we 
+				$inverted[$key]["links"][$link] = self::buildTree( $inverted[$key]["links"][$link], $element, $input );
+			}
+
+		}
+
+		return $inverted;
 	}
 
 
@@ -422,14 +449,14 @@ class SMWParent {
 		// TODO: Fix iteration here
 
 		if ( count( $keys ) > 1 ) {
-			// Copy array
+			// Copy array -> TODO: Handle general case of more than one parent 
 		} else {
 
 			foreach ( $input["tree"] as $key => $value ) {
 
 				// Put links
 				if ( $pre && $connect ) {
-					$input["links"][$pre][$key] = $connect;
+					$input["links"][$key][$pre] = $connect;
 				}
 
 				array_unshift( $input["keys"][$iter], $key );
