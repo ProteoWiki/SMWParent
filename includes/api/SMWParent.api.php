@@ -14,8 +14,16 @@ class ApiSMWParent extends ApiBase {
 		$input = array();
 		$input['child_text'] = $params['title'];
 		$input['parent_text'] = $params['title'];
-		$input['parent_type'] = $params['type'];
-		$input['children_type'] = $params['type'];
+
+		// If type has ','
+		$types = explode( ",",  $params['type'] );
+		if ( count( $types ) > 1 ) {
+			$input['parent_type'] = $types[0];
+			$input['children_type'] = $types[1];
+		} else {
+			$input['parent_type'] = $types[0];
+			$input['children_type'] = $types[0];
+		}
 
 		$input['link_properties'] = $wgSMWParentProps;
 		$input['type_properties'] = $wgSMWParentTypeProperty;

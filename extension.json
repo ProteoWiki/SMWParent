@@ -16,7 +16,8 @@
 		"wgSMWParentdefault": "Request",
 		"wgSMWChildrendefault": "File",
 		"wgSMWParentTypeProperty": ["Is_Type"],
-		"wgSMWParentProps": ["Comes_from_Process", "Comes_from_Sample", "Has_Request"]
+		"wgSMWParentProps": ["Comes_from_Process", "Comes_from_Sample", "Has_Request"],
+		"wgSMWParentPrintProps": []
 	},
 	"ExtensionMessagesFiles": {
 		"SMWParentMagic": "SMWParent.i18n.magic.php"
