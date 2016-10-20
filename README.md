@@ -1,5 +1,7 @@
 # SMWParent
 
+[![DOI](https://zenodo.org/badge/24464261.svg)](https://zenodo.org/badge/latestdoi/24464261)
+
 Extension for printing out ancestors, descendants and relationship trees of pages interconnected with Semantic MediaWiki properties.
 
 ## Functions 
