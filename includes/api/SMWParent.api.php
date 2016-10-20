@@ -22,15 +22,21 @@ class ApiSMWParent extends ApiBase {
 		$input['print_properties'] = $wgSMWParentPrintProps;
 
 		if ( array_key_exists( "link_properties", $params ) ) {
-			$input['link_properties'] = explode( ",", $params['link_properties'] );
+			if ( ! empty( $params['link_properties'] ) ) {
+				$input['link_properties'] = explode( ",", $params['link_properties'] );
+			}
 		}
 
 		if ( array_key_exists( "type_properties", $params ) ) {
-			$input['type_properties'] = explode( ",", $params['type_properties'] );
+			if ( ! empty( $params['type_properties'] ) ) {
+				$input['type_properties'] = explode( ",", $params['type_properties'] );
+			}
 		}
 
 		if ( array_key_exists( "print_properties", $params ) ) {
-			$input['print_properties'] = explode( ",", $params['print_properties'] );
+			if ( ! empty( $params['print_properties'] ) ) {
+				$input['print_properties'] = explode( ",", $params['print_properties'] );
+			}
 		}
 
 		switch ( $params['retrieve'] )  {
