@@ -3,6 +3,10 @@ class ApiSMWParent extends ApiBase {
 
 	public function execute() {
 
+		global $wgSMWParentProps;
+		global $wgSMWParentTypeProperty;
+		global $wgSMWParentPrintProps;
+
 		$params = $this->extractRequestParams();
 
 		$output = array();
@@ -13,25 +17,20 @@ class ApiSMWParent extends ApiBase {
 		$input['parent_type'] = $params['type'];
 		$input['children_type'] = $params['type'];
 
+		$input['link_properties'] = $wgSMWParentProps;
+		$input['type_properties'] = $wgSMWParentTypeProperty;
+		$input['print_properties'] = $wgSMWParentPrintProps;
+
 		if ( array_key_exists( "link_properties", $params ) ) {
 			$input['link_properties'] = explode( ",", $params['link_properties'] );
-		} else {
-			global $wgSMWParentProps;
-			$input['link_properties'] = $wgSMWParentProps;
 		}
 
 		if ( array_key_exists( "type_properties", $params ) ) {
 			$input['type_properties'] = explode( ",", $params['type_properties'] );
-		} else {
-			global $wgSMWParentTypeProperty;
-			$input['type_properties'] = $wgSMWParentTypeProperty;
 		}
 
 		if ( array_key_exists( "print_properties", $params ) ) {
 			$input['print_properties'] = explode( ",", $params['print_properties'] );
-		} else {
-			global $wgSMWParentPrintProps;
-			$input['print_properties'] = $wgSMWParentPrintProps;
 		}
 
 		switch ( $params['retrieve'] )  {
