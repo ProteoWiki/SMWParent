@@ -69,7 +69,8 @@ class SMWParentParser {
 
 		$listStruct = SMWParent::executeGetTree( $input );
 
-		// TO FINISH
+		// Think how to represent this
+		return "";
 	}
 
 	public static function parseElement( $type="parent", $parser, $frame, $args ) {

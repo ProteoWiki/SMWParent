@@ -21,6 +21,8 @@ class ApiSMWParent extends ApiBase {
 		$input['type_properties'] = $wgSMWParentTypeProperty;
 		$input['print_properties'] = $wgSMWParentPrintProps;
 
+		$input['level'] = 1; // No idea if this might be changed in the future
+
 		if ( array_key_exists( "link_properties", $params ) ) {
 			if ( ! empty( $params['link_properties'] ) ) {
 				$input['link_properties'] = explode( ",", $params['link_properties'] );
@@ -43,13 +45,13 @@ class ApiSMWParent extends ApiBase {
 
 			case "parent":
 				$output = SMWParent::executeGetParent( $input );
-
+				break;
 			case "children":
 				$output = SMWParent::executeGetChildren( $input );
-
+				break;
 			case "tree":
 				$output = SMWParent::executeGetTree( $input );
-
+				break;
 		}
 
 		// TODO, generate processing

@@ -411,9 +411,9 @@ class SMWParent {
 			}
 		}
 
-		echo "INVERTED\n<br />";
-		var_dump( $inverted );
-		echo "--\n<br />";
+		//echo "INVERTED\n<br />";
+		//var_dump( $inverted );
+		//echo "--\n<br />";
 
 		return $inverted;
 
