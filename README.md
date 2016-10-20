@@ -1,6 +1,6 @@
 # SMWParent
 
-Extension for printing out ancestors and descendants of a certain page-based on interconnected Semantic MediaWiki properties.
+Extension for printing out ancestors, descendants and relationship trees of pages interconnected with Semantic MediaWiki properties.
 
 ## Functions 
 
@@ -9,6 +9,27 @@ Extension for printing out ancestors and descendants of a certain page-based on 
   
 * {{#SMWChildren:}}
   Show the children / descendant pages
+
+### Usage
+
+* {{#SMWParent:FULLPAGENAME|PARENT_TYPE/PARENT_LEVEL|link}}
+
+
+Params:
+
+- If FULLPAGENAME is skipped, current page is used
+- PARENT_TYPE to retrieve, or alternately up to which level PARENT_LEVEL to reach
+- If input is 'link', resulting pages are shown as links instead of as text.
+
+## API
+
+An API endpoint is available. action=smwparent.
+* retrieve: 3 possible methods (parent, children, tree)
+* title: fullpage title of page in the wiki
+* type: the type of pages to be retrieved (according to a given properties)
+* link_properties: properties used for linking between pages
+* type_properties: properties used for defining the types. If 'Categories', MediaWiki categories are also used.
+* print_properties: properties to be printed and appended to the nodes.
 
 ## Parameters and default values
 
@@ -26,18 +47,8 @@ $wgSMWParentProps = array('Comes_from_Process', 'Comes_from_Sample', 'Has_Reques
 
 $wgSMWParentPrintProps = array('Start', 'End'); // Properties associated to an object which are printed
 
-## Usage
-
-* {{#SMWParent:FULLPAGENAME|PARENT_TYPE/PARENT_LEVEL|link}}
-
-Params:
-
-- If FULLPAGENAME is skipped, current page is used
-- PARENT_TYPE to retrieve, or alternately up to which level PARENT_LEVEL to reach
-- If input is 'link', resulting pages are shown as links instead of as text.
-
 ## TODO
 
-* Producing a full tree from parent and children outputs
-* Design API
 * Better handling of SMW property types
+* Refactor some functions and variables
+
