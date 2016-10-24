@@ -9,6 +9,9 @@ class SMWParentParser {
 	public static function parseParent( $parser, $frame, $args ) {
 
 		$input = self::parseElement( "parent", $parser, $frame, $args );
+		
+		$input = self::retrieveTypes( $input );
+		
 		$listStruct = SMWParent::executeGetParent( $input );
 
 		$leaves = array();
@@ -38,6 +41,9 @@ class SMWParentParser {
 	public static function parseChildren( $parser, $frame, $args ) {
 
 		$input = self::parseElement( "children", $parser, $frame, $args );
+		
+		$input = self::retrieveTypes( $input );
+
 		$listStruct = SMWParent::executeGetChildren( $input );
 
 		$leaves = array();
@@ -67,6 +73,8 @@ class SMWParentParser {
 
 		$input = self::parseElement( "tree", $parser, $frame, $args );
 
+		$input = self::retrieveTypes( $input );
+		
 		$listStruct = SMWParent::executeGetTree( $input );
 
 		// Think how to represent this
@@ -157,6 +165,25 @@ class SMWParentParser {
 		return( $input );
 	}
 
+	
+	/**
+	* Retrieving types of properties
+	* @param $array Array of inputs
+    * @return Modified input
+	*/
+
+	private static function retrieveTypes( $input ) {
+
+		if ( array_key_exists( "print_properties", $input ) ) {
+			
+			if ( array_count( $input["print_properties"] ) > 0 ) {
+				$input["print_properties_types"] = SMWParent::retrievePropertyTypes( $input["print_properties"] );
+			}
+			
+		}
+
+		return $input;
+	}
 
 	/**
 	* Converting structures

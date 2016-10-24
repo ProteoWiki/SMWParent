@@ -308,7 +308,7 @@ class SMWParent {
 	* @param $properties Array: List of properties
 	* @return $store
 	*/
-	private static function retrievePropertyTypes( $store, $properties ) {
+	public static function retrievePropertyTypes( $store, $properties ) {
 
 		foreach ( $properties as $property ) {
 
