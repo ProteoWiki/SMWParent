@@ -26,7 +26,7 @@ class SMWParent {
 				
 		$out[ $input['child_text'] ] = array(
 			"pos" => "start",
-			"type" => self::getProperties( $input['child_text'], $input['type_properties'] ),
+			"type" => self::getProperties( $input['child_text'], $input['type_properties'], $input['print_properties_types'] ),
 			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'], $input['print_properties_types'] ),
 			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'], $input['print_properties_types'] )
 		);
@@ -43,7 +43,7 @@ class SMWParent {
 		
 		$out[ $input['parent_text'] ] = array(
 			"pos" => "start",
-			"type" => self::getProperties( $input['parent_text'], $input['type_properties'] ),
+			"type" => self::getProperties( $input['parent_text'], $input['type_properties'], $input['print_properties_types'] ),
 			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'], $input['print_properties_types'] ),
 			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'], $input['print_properties_types'] )
 		);
@@ -198,7 +198,7 @@ class SMWParent {
 					$targetOut[ $prop ][ $target ]["type"] = $typePropertiesValues;
 
 					$itera = $level + 1;
-					$temparray = self::getElementTree( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties );
+					$temparray = self::getElementTree( $type, $target, $sourceType, $linkProperties, $typeProperties, $itera, $printProperties, $printTypes );
 					
 
 					foreach ( $temparray as $key => $temp ) {
