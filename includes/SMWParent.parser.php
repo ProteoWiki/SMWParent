@@ -174,6 +174,8 @@ class SMWParentParser {
 
 	private static function retrieveTypes( $input ) {
 
+		$input["print_properties_types"] = array();
+		
 		if ( array_key_exists( "print_properties", $input ) ) {
 			
 			if ( array_count( $input["print_properties"] ) > 0 ) {

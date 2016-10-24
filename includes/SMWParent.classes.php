@@ -27,7 +27,7 @@ class SMWParent {
 		$out[ $input['child_text'] ] = array(
 			"pos" => "start",
 			"type" => self::getProperties( $input['child_text'], $input['type_properties'] ),
-			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
+			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'], $input['print_properties_types'] ),
 			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )
 		);
 		
@@ -44,7 +44,7 @@ class SMWParent {
 		$out[ $input['parent_text'] ] = array(
 			"pos" => "start",
 			"type" => self::getProperties( $input['parent_text'], $input['type_properties'] ),
-			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'] ),
+			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'], $input['print_properties_types'] ),
 			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'] )
 		);
 		
@@ -64,7 +64,7 @@ class SMWParent {
 
 	}
 
-	private static function getElementTree( $type="parent", $targetText, $sourceType, $linkProperties, $typeProperties, $level=1, $printProperties ) {
+	private static function getElementTree( $type="parent", $targetText, $sourceType, $linkProperties, $typeProperties, $level=1, $printProperties, $printTypes=array() ) {
 
 		global $wgSMWParentlimit;
 
@@ -135,14 +135,20 @@ class SMWParent {
 								if ( count( $valueCont ) > 1 ) {
 									$list = array();
 									while ( $obj = $valueCont->getNextObject() ) {
-										// TODO: We might be interested in handling type here
-										array_push( $list, $obj->getWikiValue() );
+										
+										$value = $obj->getWikiValue();
+										$value = self::correctType( $value, $printKey, $printTypes );
+										
+										array_push( $list, $value );
 									}
 									$printKeys[$printKey] = $list;
 								} else {
 									while ( $obj = $valueCont->getNextObject() ) {
-										// TODO: We might be interested in handling type here
-										$printKeys[$printKey] = $obj->getWikiValue();
+										
+										$value = $obj->getWikiValue();
+										$value = self::correctType( $value, $printKey, $printTypes );
+
+										$printKeys[$printKey] = $value;
 									}
 								}
 							}
@@ -315,12 +321,16 @@ class SMWParent {
 			// We skip category
 			if ( $property !== "Categories" ) {
 
-				// We query Has Type property
-				$result = self::getProperties( "Property:".$property, array("Has_type") );
-
-				if ( array_key_exists( "Has_type", $result ) ) {
-					$store[ $property ]  = $result["Has_type"];
+				// We query property
+				$propObj = SMW\DIProperty::newFromUserLabel( $property );
+				
+				// Default: text
+				$store[ $property ] = "_txt";
+				
+				if ( $propObj ) {
+					$store[ $property ]  = $propObj->findPropertyTypeID();
 				}
+				
 			}
 		}
 
@@ -328,6 +338,37 @@ class SMWParent {
 
 	}
 
+	/**
+	* This function to correct they type of a value
+	* @param $entry String : value
+	* @param $key String : actual key
+	* @param $listKeys Array: List of key type correspondence
+	* @return value in another type
+	* @return boolean
+	*/
+	
+	private static function correctType( $value, $key, $listKeys ) {
+
+		if ( array_key_exists( $key, $listKeys ) ) {
+			
+			// Only handling numeric num
+			if ( $listKeys[$key] === "_num" ) {
+				
+				if ( is_integer( $value ) ) {
+					$value = intval( $value );
+				}
+				
+				if ( is_float( $value ) ) {
+					$value = floatval( $value );
+				}
+			}
+			
+			//Pending date and others...
+			
+		}
+		
+		return $value;
+	}
 
 	/**
 	* This function checks the type of an entry
