@@ -51,6 +51,6 @@ $wgSMWParentPrintProps = array('Start', 'End'); // Properties associated to an o
 
 ## TODO
 
-* Better handling of SMW property types
+* Further handling of SMW property types
 * Refactor some functions and variables
 
