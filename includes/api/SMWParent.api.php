@@ -48,6 +48,9 @@ class ApiSMWParent extends ApiBase {
 				$input['print_properties'] = explode( ",", $params['print_properties'] );
 			}
 		}
+		
+		// Also process the types
+		$input = SMWParent::retrieveTypes( $input );
 
 		switch ( $params['retrieve'] )  {
 

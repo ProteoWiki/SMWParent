@@ -309,12 +309,35 @@ class SMWParent {
 	}
 
 	/**
+	* Retrieving types of properties
+	* @param $array Array of inputs
+    * @return Modified input
+	*/
+
+	public static function retrieveTypes( $input ) {
+
+		$input["print_properties_types"] = array();
+		
+		if ( array_key_exists( "print_properties", $input ) ) {
+			
+			if ( count( $input["print_properties"] ) > 0 ) {
+				$input["print_properties_types"] = SMWParent::retrievePropertyTypes( $input["print_properties"] );
+			}
+			
+		}
+
+		return $input;
+	}
+	
+	
+	
+	/**
 	* This function is for storing types of properties
 	* @param $store : Array the store of the types
 	* @param $properties Array: List of properties
 	* @return $store
 	*/
-	public static function retrievePropertyTypes( $properties ) {
+	private static function retrievePropertyTypes( $properties ) {
 
 		$store = array();
 		
