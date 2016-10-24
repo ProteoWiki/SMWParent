@@ -379,12 +379,13 @@ class SMWParent {
 			// Only handling numeric num
 			if ( $listKeys[$key] === "_num" ) {
 				
-				if ( is_integer( $value ) ) {
-					$value = intval( $value );
-				}
-				
-				if ( is_float( $value ) ) {
-					$value = floatval( $value );
+				if ( is_numeric( $value ) ) {
+					
+					if ( (int) $value == $value ) {
+						$value = intval( $value );
+					} else {
+						$value = floatval( $value );
+					}
 				}
 			}
 			
