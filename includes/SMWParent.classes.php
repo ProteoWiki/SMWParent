@@ -314,8 +314,10 @@ class SMWParent {
 	* @param $properties Array: List of properties
 	* @return $store
 	*/
-	public static function retrievePropertyTypes( $store, $properties ) {
+	public static function retrievePropertyTypes( $properties ) {
 
+		$store = array();
+		
 		foreach ( $properties as $property ) {
 
 			// We skip category
