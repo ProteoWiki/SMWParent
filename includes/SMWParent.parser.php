@@ -178,7 +178,7 @@ class SMWParentParser {
 		
 		if ( array_key_exists( "print_properties", $input ) ) {
 			
-			if ( array_count( $input["print_properties"] ) > 0 ) {
+			if ( count( $input["print_properties"] ) > 0 ) {
 				$input["print_properties_types"] = SMWParent::retrievePropertyTypes( $input["print_properties"] );
 			}
 			
