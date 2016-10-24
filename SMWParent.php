@@ -20,7 +20,7 @@ call_user_func( function() {
 		'author' => array(
 			'[https://www.mediawiki.org/wiki/User:Toniher Toni Hermoso]'
 		),
-		'version' => '0.2.0',
+		'version' => '0.2.1',
 		'url' => 'https://www.mediawiki.org/wiki/Extension:SMWParent',
 		'descriptionmsg' => 'smwparent-desc',
 	);
