@@ -28,7 +28,7 @@ class SMWParent {
 			"pos" => "start",
 			"type" => self::getProperties( $input['child_text'], $input['type_properties'] ),
 			"link" => self::getElementTree( "parent", $input['child_text'], $input['parent_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'], $input['print_properties_types'] ),
-			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'] )
+			"printouts" => self::getProperties( $input['child_text'], $input['print_properties'], $input['print_properties_types'] )
 		);
 		
 		return $out;
@@ -45,7 +45,7 @@ class SMWParent {
 			"pos" => "start",
 			"type" => self::getProperties( $input['parent_text'], $input['type_properties'] ),
 			"link" => self::getElementTree( "children", $input['parent_text'], $input['children_type'], $input['link_properties'], $input['type_properties'], $input['level'], $input['print_properties'], $input['print_properties_types'] ),
-			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'] )
+			"printouts" => self::getProperties( $input['parent_text'], $input['print_properties'], $input['print_properties_types'] )
 		);
 		
 		return $out;
@@ -158,7 +158,7 @@ class SMWParent {
 
 					if ( $pageEntry ) {
 						if ( $type === "parent" ) {
-							$printKeys = self::getProperties( $pageEntry, $printProperties );
+							$printKeys = self::getProperties( $pageEntry, $printProperties, $printTypes );
 						}
 						$targetList[$prop][ $pageEntry ] = $printKeys;
 					}
@@ -179,7 +179,7 @@ class SMWParent {
 			foreach ( $matches as $target => $content ) {
 	
 				// Retrieve properties
-				$typePropertiesValues = self::getProperties( $target, $typeProperties );
+				$typePropertiesValues = self::getProperties( $target, $typeProperties, $printTypes );
 
 				if ( ( is_numeric( $sourceType ) && $sourceType == $level ) || ( self::checkType( $sourceType, $typePropertiesValues ) ) ) {
 	
@@ -229,7 +229,7 @@ class SMWParent {
 	* @element string
 	* @properties Array of properties
 	**/
-	public static function getProperties( $element, $printoutProperties ) {
+	public static function getProperties( $element, $printoutProperties, $printTypes=array() ) {
 
 		// Values
 		$printKeys = array();
@@ -268,14 +268,20 @@ class SMWParent {
 							if ( count( $valueCont ) > 1 ) {
 								$list = array();
 								while ( $obj = $valueCont->getNextObject() ) {
-									// TODO: We might be interested in handling type here
-									array_push( $list, $obj->getWikiValue() );
+									
+									$value = $obj->getWikiValue();
+									$value = self::correctType( $value, $printKey, $printTypes );
+
+									array_push( $list, $value );
 								}
 								$printKeys[$printKey] = $list;
 							} else {
 								while ( $obj = $valueCont->getNextObject() ) {
-									// TODO: We might be interested in handling type here
-									$printKeys[$printKey] = $obj->getWikiValue();
+									
+									$value = $obj->getWikiValue();
+									$value = self::correctType( $value, $printKey, $printTypes );
+
+									$printKeys[$printKey] = $value;
 								}
 							}
 						}
