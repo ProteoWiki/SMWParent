@@ -53,4 +53,5 @@ $wgSMWParentPrintProps = array('Start', 'End'); // Properties associated to an o
 
 * Better handling of SMW property types
 * Refactor some functions and variables
+* Adding JSONScript tests following Semantic MediaWiki model
 
