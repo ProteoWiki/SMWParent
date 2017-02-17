@@ -36,7 +36,7 @@
 		"SMWParent": "includes/SMWParent.classes.php",
 		"SMWParentHooks": "includes/SMWParent.hooks.php",
 		"SMWParentParser": "includes/SMWParent.parser.php",
-		"ApiSMWParent": "includes/api/SMWParent.api.php",
+		"ApiSMWParent": "includes/api/SMWParent.api.php"
 	},
 	"ApiModules": {
 		"smwparent" : "ApiSMWParent"
